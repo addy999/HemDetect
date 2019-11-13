@@ -72,6 +72,7 @@ class Data:
         for data_dict in self.data:
             array = list(data_dict.values())[0]
             array = torch.Tensor(array).unsqueeze(0)
+            print(array.shape)
             self.data[i] = {
                 list(data_dict.keys())[0] : array
             }
@@ -212,8 +213,8 @@ class HemorrhageDetector(nn.Module):
         super(HemorrhageDetector, self).__init__()
         self.name = "Detector"
 
-        for param in alexnet_model.parameters():
-              param.requires_grad = False
+        # for param in alexnet_model.parameters():
+        #       param.requires_grad = False
 
         self.fc1 = nn.Linear(256*31*31, 100)
         self.fc2 = nn.Linear(100, 2)
@@ -335,10 +336,10 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(elapsed_time)
+    print("Time", elapsed_time)
     
     # Write the train/test loss/err into CSV file for plotting later
-    np.savetxt("{}_train_loss.csv".format(model_path), losses)
+    np.savetxt("{0}_train_loss_{1}.csv".format(model_path, elapsed_time), losses)
 
 #     plt.title("Training Loss Curve")
 #     plt.plot(iters, losses, label="Train")
@@ -353,14 +354,6 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
 #     plt.ylabel("Accuracy")
 #     plt.legend(loc='best')
 #     plt.show()
-
-
-# ---
-# # Runs
-
-# ## Detector
-
-# In[8]:
 
 
 print("Train...")
@@ -380,7 +373,7 @@ train_data = Data(training_folders, {
     "subarachnoid":"any", 
     "intraventricular":"any", 
     "subdural":"any", 
-}, 1000)
+}, 64)
 
 print("Val....")
 
@@ -401,25 +394,15 @@ val_data = Data(val_folders, {
     "subdural":"any", 
 }, 64)
 
-
-# In[ ]:
-
-
 print("Amound of train+val data being used:", len(train_data), len(val_data))
-
-
-# In[ ]:
 
 np.savetxt("./done_data_1000.csv", [1,2,3])
 
-model = HemorrhageDetector()
-train(model, train_data, val_data)
+model = HemorrhageDetector().cuda()
+train(model, train_data, val_data, use_cuda=True)
 
 
 # ## Classfier run
-
-# In[ ]:
-
 
 # training_folders = [
 #     "Processed/train/epidural",
