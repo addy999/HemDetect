@@ -289,13 +289,13 @@ def get_accuracy(model, data_loader, use_cuda):
         n = n+1
     return cor / total
 
-def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01, num_epochs=30, use_cuda = False):
+def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=30, use_cuda = False):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     iters, losses, train_acc, val_acc = [], [], [], []
     
     training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= 32)
+    # val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= 32)
     start_time = time.time()
     n = 0 
     for epoch in range(num_epochs):
@@ -375,31 +375,31 @@ train_data = Data(training_folders, {
     "subdural":"any", 
 }, 64)
 
-print("Val....")
+# print("Val....")
 
-val_folders = [
-    "../Data/Processed/val/epidural",
-    "../Data/Processed/val/intraparenchymal",
-    "../Data/Processed/val/subarachnoid",
-    "../Data/Processed/val/intraventricular",
-    "../Data/Processed/val/subdural",
-    "../Data/Processed/val/nohem",
-]
+# val_folders = [
+#     "../Data/Processed/val/epidural",
+#     "../Data/Processed/val/intraparenchymal",
+#     "../Data/Processed/val/subarachnoid",
+#     "../Data/Processed/val/intraventricular",
+#     "../Data/Processed/val/subdural",
+#     "../Data/Processed/val/nohem",
+# ]
 
-val_data = Data(val_folders, {
-    "epidural":"any", 
-    "intraparenchymal":"any", 
-    "subarachnoid":"any", 
-    "intraventricular":"any", 
-    "subdural":"any", 
-}, 64)
+# val_data = Data(val_folders, {
+#     "epidural":"any", 
+#     "intraparenchymal":"any", 
+#     "subarachnoid":"any", 
+#     "intraventricular":"any", 
+#     "subdural":"any", 
+# }, 64)
 
 print("Amound of train+val data being used:", len(train_data), len(val_data))
 
 np.savetxt("./done_data_test.csv", [1,2,3])
 
 model = HemorrhageDetector().cuda()
-train(model, train_data, val_data, use_cuda=True)
+train(model, train_data, use_cuda=True)
 
 
 # ## Classfier run
