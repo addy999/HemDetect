@@ -66,7 +66,15 @@ class Data:
 
         self.convetLabels()
         self.dataToTensor()
+        self.cleanData()
     
+    def cleanData(self):
+        keys_to_remove = []
+        for data in self.data:
+            val = list(data.values())[0]
+            if type(val) != torch.Tensor():
+                self.data.remove(data)
+
     def dataToTensor(self):
         i = 0
         for data_dict in self.data:
@@ -102,6 +110,8 @@ class Data:
         img = list(data.values())[0]
         word_label = list(data.keys())[0]
         label = self.label_dict[word_label]
+
+        #print(type(img), type(label))
 
         return img, label
     
@@ -213,8 +223,8 @@ class HemorrhageDetector(nn.Module):
         super(HemorrhageDetector, self).__init__()
         self.name = "Detector"
 
-        # for param in alexnet_model.parameters():
-        #       param.requires_grad = False
+        for param in alexnet_model.parameters():
+            param.requires_grad = False
 
         self.fc1 = nn.Linear(256*31*31, 100)
         self.fc2 = nn.Linear(100, 2)
@@ -289,7 +299,7 @@ def get_accuracy(model, data_loader, use_cuda):
         n = n+1
     return cor / total
 
-def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=30, use_cuda = False):
+def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     iters, losses, train_acc, val_acc = [], [], [], []
@@ -310,6 +320,9 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
                 labels = labels.cuda()
             #############################################
             
+            #print("imgs.shape, labels.shape") 
+            #print(imgs.shape, labels.shape)
+
             outputs = model(imgs)             
             loss = criterion(outputs, labels) 
             loss.backward()               
@@ -323,11 +336,11 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
 #             val_acc.append(get_accuracy(model, val_loader, use_cuda))  # finding the validation accuracy
             n = n+1
             count = count+1
-        
+            print(epoch, count)
         print("Epoch", epoch, "Loss", loss)
         
         # Save the current model (checkpoint) to a file
-        model_path = "Model_test/model_{0}_bs{1}_lr{2}_epoch{3}".format(model.name,
+        model_path = "Model_1000_each/model_{0}_bs{1}_lr{2}_epoch{3}".format(model.name,
                                                    batch_size,
                                                    learning_rate,
                                                    epoch)
@@ -373,7 +386,7 @@ train_data = Data(training_folders, {
     "subarachnoid":"any", 
     "intraventricular":"any", 
     "subdural":"any", 
-}, 64)
+}, 1000)
 
 # print("Val....")
 
@@ -394,12 +407,16 @@ train_data = Data(training_folders, {
 #     "subdural":"any", 
 # }, 64)
 
-print("Amound of train+val data being used:", len(train_data), len(val_data))
+print("Amound of train data being used:", len(train_data))
+#print("Example img.shape, label.shape")
+#img, label = train_data[0]
+#print(img.shape, label.shape)
 
-np.savetxt("./done_data_test.csv", [1,2,3])
 
-model = HemorrhageDetector().cuda()
-train(model, train_data, use_cuda=True)
+#np.savetxt("./done_data_1000.csv", [1,2,3])
+
+model = HemorrhageDetector()
+train(model, train_data, use_cuda=False)
 
 
 # ## Classfier run
