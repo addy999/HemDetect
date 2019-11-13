@@ -72,10 +72,10 @@ class Data:
         for data_dict in self.data:
             array = list(data_dict.values())[0]
             array = torch.Tensor(array).unsqueeze(0)
-            print(array.shape)
-            self.data[i] = {
-                list(data_dict.keys())[0] : array
-            }
+            if array.shape == torch.Size([1, 512, 512]):
+                self.data[i] = {
+                    list(data_dict.keys())[0] : array
+                }
             i+=1
     
     def convetLabels(self):
