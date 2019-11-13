@@ -62,7 +62,7 @@ class Data:
         i = 0
         for data_dict in self.data:
             array = list(data_dict.values())[0]
-            array = torch.Tensor(array).unsqueeze(0)
+            array = torch.Tensor(array).unsqueeze(0) * 255
             if array.shape == torch.Size([1, 512, 512]):
                 self.data[i] = {
                     list(data_dict.keys())[0] : array
@@ -94,6 +94,9 @@ class Data:
         word_label = list(data.keys())[0]
         label = self.label_dict[word_label]
 
+        if type(img) != torch.Tensor:
+            img, label = self.__getitem__(idx-1)
+        
         #print(type(img), type(label))
 
         return img, label

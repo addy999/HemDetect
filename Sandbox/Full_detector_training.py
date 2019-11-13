@@ -16,116 +16,9 @@ import time
 import torch
 from PIL import Image
 
-
-# In[2]:
-
-
-import os
-import _pickle as pickle 
-import torch
-import numpy as np
-from multiprocessing import Pool
-import gc
-
-class Data:
-    
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None):
-        
-        if type(path_to_pickle_folders) != list:
-            path_to_pickle_folders = [path_to_pickle_folders]
-        
-        self.data = []
-        
-        for folder in path_to_pickle_folders:
-            print("Unpacking", os.path.basename(folder))
-            working_label = os.path.basename(folder)
-            
-            if os.path.basename(folder) in replace_classes:
-                working_label = replace_classes[os.path.basename(folder)]
-            
-            files_to_unpickle = [os.path.join(folder, img) for img in os.listdir(folder)]
-            files_to_unpickle = files_to_unpickle[:maximum_per_folder]
-            
-#             gc.disable()
-            #p = Pool()
-            #results = p.map(self.parsePickle, files_to_unpickle)
-            #p.close()
-            #p.join()
-            results = [self.parsePickle(file) for file in files_to_unpickle]
-#             gc.enable()
-            
-            # add to data
-            for file in results:
-                try:
-                    if file:
-                        pass
-                except:
-                    self.data.append({
-                        working_label : file
-                    })
-
-        self.convetLabels()
-        self.dataToTensor()
-        self.cleanData()
-    
-    def cleanData(self):
-        remove = []
-        i=0
-        for data in self.data:
-            val = list(data.values())[0]
-            if type(val) != torch.Tensor:
-                remove.append(i)
-            i+=1
-
-        for i in remove:
-            del self.data[i]
-
-    def dataToTensor(self):
-        i = 0
-        for data_dict in self.data:
-            array = list(data_dict.values())[0]
-            array = torch.Tensor(array).unsqueeze(0)
-            if array.shape == torch.Size([1, 512, 512]):
-                self.data[i] = {
-                    list(data_dict.keys())[0] : array
-                }
-            i+=1
-    
-    def convetLabels(self):
-        all_labels = np.array([list(data.keys())[0] for data in self.data])
-        unique_labels = list(np.unique(all_labels))
-        self.label_dict = {label:unique_labels.index(label) for label in unique_labels}
-    
-    def parsePickle(self, path_to_pickle):
-        try:
-            f=open(path_to_pickle,'rb')
-            
-            gc.disable()
-            img=pickle.load(f)
-            gc.enable()
-            
-            f.close()
-            return img
-        except:
-            pass
-    
-    def __getitem__(self, idx):
-        ''' Return img, label'''
-        data = self.data[idx]
-        img = list(data.values())[0]
-        word_label = list(data.keys())[0]
-        label = self.label_dict[word_label]
-
-        if type(img) != torch.Tensor:
-            img, label = self.__getitem__(idx-1)
-        
-        #print(type(img), type(label))
-
-        return img, label
-    
-    def __len__(self):
-        return len(self.data)
-
+import sys
+sys.path.append(r'../Data/')
+from dataloader import DataLoader
 
 # ## **Hemorrhage Classifier:**
 
@@ -308,9 +201,13 @@ def get_accuracy(model, data_loader, use_cuda):
     return cor / total
 
 def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False):
+    
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     iters, losses, train_acc, val_acc = [], [], [], []
+    
+    if not os.path.exists(model.name):
+        os.mkdir("./" + model.name)    
     
     training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size)
     # val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= 32)
@@ -344,11 +241,12 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
 #             val_acc.append(get_accuracy(model, val_loader, use_cuda))  # finding the validation accuracy
             n = n+1
             count = count+1
-            print(epoch, count)
+            # print(epoch, count)
+            
         print("Epoch", epoch, "Loss", loss)
         
         # Save the current model (checkpoint) to a file
-        model_path = "Model_1000_each/model_{0}_bs{1}_lr{2}_epoch{3}".format(model.name,
+        model_path = model.name + "/{0}_bs{1}_lr{2}_epoch{3}".format(
                                                    batch_size,
                                                    learning_rate,
                                                    epoch)
@@ -394,7 +292,7 @@ train_data = Data(training_folders, {
     "subarachnoid":"any", 
     "intraventricular":"any", 
     "subdural":"any", 
-}, 1000)
+}, 100)
 
 # print("Val....")
 
@@ -424,6 +322,7 @@ print("Amound of train data being used:", len(train_data))
 #np.savetxt("./done_data_1000.csv", [1,2,3])
 
 model = HemorrhageDetector()
+model.name = "Overfit_detector_Alex"
 train(model, train_data, use_cuda=False)
 
 
