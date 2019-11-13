@@ -327,7 +327,7 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
         print("Epoch", epoch, "Loss", loss)
         
         # Save the current model (checkpoint) to a file
-        model_path = "Model_1000_each/model_{0}_bs{1}_lr{2}_epoch{3}".format(model.name,
+        model_path = "Model_test/model_{0}_bs{1}_lr{2}_epoch{3}".format(model.name,
                                                    batch_size,
                                                    learning_rate,
                                                    epoch)
@@ -396,7 +396,7 @@ val_data = Data(val_folders, {
 
 print("Amound of train+val data being used:", len(train_data), len(val_data))
 
-np.savetxt("./done_data_1000.csv", [1,2,3])
+np.savetxt("./done_data_test.csv", [1,2,3])
 
 model = HemorrhageDetector().cuda()
 train(model, train_data, val_data, use_cuda=True)
