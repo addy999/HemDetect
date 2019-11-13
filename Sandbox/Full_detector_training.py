@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 import time
 import torch
 from PIL import Image
-
+import os
 import sys
 sys.path.append(r'../Data/')
-from dataloader import DataLoader
+from dataloader import Data
 
 # ## **Hemorrhage Classifier:**
 
@@ -206,8 +206,8 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     iters, losses, train_acc, val_acc = [], [], [], []
     
-    if not os.path.exists(model.name):
-        os.mkdir("./" + model.name)    
+    if not os.path.exists("Model_" + model.name):
+        os.mkdir("./Model_" + model.name)    
     
     training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size)
     # val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= 32)
@@ -246,7 +246,7 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
         print("Epoch", epoch, "Loss", loss)
         
         # Save the current model (checkpoint) to a file
-        model_path = model.name + "/{0}_bs{1}_lr{2}_epoch{3}".format(
+        model_path = "Model_" + model.name + "/{0}_bs_{1}_lr_{2}_epoch".format(
                                                    batch_size,
                                                    learning_rate,
                                                    epoch)
@@ -292,7 +292,7 @@ train_data = Data(training_folders, {
     "subarachnoid":"any", 
     "intraventricular":"any", 
     "subdural":"any", 
-}, 100)
+}, 10000)
 
 # print("Val....")
 
@@ -314,16 +314,11 @@ train_data = Data(training_folders, {
 # }, 64)
 
 print("Amound of train data being used:", len(train_data))
-#print("Example img.shape, label.shape")
-#img, label = train_data[0]
-#print(img.shape, label.shape)
-
-
-#np.savetxt("./done_data_1000.csv", [1,2,3])
 
 model = HemorrhageDetector()
-model.name = "Overfit_detector_Alex"
-train(model, train_data, use_cuda=False)
+model.name = "60k_detector_Alex"
+#print(torch.max(train_data[0][0]))
+train(model, train_data, batch_size=64, use_cuda=False)
 
 
 # ## Classfier run
