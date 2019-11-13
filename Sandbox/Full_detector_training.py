@@ -69,11 +69,16 @@ class Data:
         self.cleanData()
     
     def cleanData(self):
-        keys_to_remove = []
+        remove = []
+        i=0
         for data in self.data:
             val = list(data.values())[0]
-            if type(val) != torch.Tensor():
-                self.data.remove(data)
+            if type(val) != torch.Tensor:
+                remove.append(i)
+            i+=1
+
+        for i in remove:
+            del self.data[i]
 
     def dataToTensor(self):
         i = 0
