@@ -126,16 +126,42 @@ class HemorrhageDetector(nn.Module):
 
         for param in alexnet_model.parameters():
             param.requires_grad = False
-
-        self.fc1 = nn.Linear(256*31*31, 100)
+        
+        self.alex_output_size = 256*7*7
+        self.fc1 = nn.Linear(self.alex_output_size, 100)
         self.fc2 = nn.Linear(100, 2)
 
     def forward(self, x):
         x = alexnet_model.features(x)
-#         print(x.shape)
-        x = x.view(-1, 256*31*31)
+        #print("Alex output", x.shape)
+        #full size: x = x.view(-1, 256*31*31)
+        x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
+
+        return x
+
+class HemorrhageDetector3(nn.Module):
+    def __init__(self):
+        super(HemorrhageDetector3, self).__init__()
+        self.name = "Detector3"
+
+        for param in alexnet_model.parameters():
+            param.requires_grad = False
+
+        self.alex_output_size = 256*7*7
+        self.fc1 = nn.Linear(self.alex_output_size, 1000)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 2)
+
+    def forward(self, x):
+        x = alexnet_model.features(x)
+        #print("Alex output", x.shape)
+        #full size: x = x.view(-1, 256*31*31)
+        x = x.view(-1, self.alex_output_size)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
 
         return x
 
@@ -292,7 +318,7 @@ train_data = Data(training_folders, {
     "subarachnoid":"any", 
     "intraventricular":"any", 
     "subdural":"any", 
-}, 10000)
+}, 1000, False, 128)
 
 # print("Val....")
 
@@ -314,11 +340,13 @@ train_data = Data(training_folders, {
 # }, 64)
 
 print("Amound of train data being used:", len(train_data))
+#print("Type", type(train_data[0][0]))
 
-model = HemorrhageDetector()
-model.name = "60k_detector_Alex"
+model = HemorrhageDetector3()
+model.name = "resizing_test_complex"
 #print(torch.max(train_data[0][0]))
-train(model, train_data, batch_size=64, use_cuda=False)
+print("Starting training", train_data[0][0].shape)
+train(model, train_data, use_cuda=False)
 
 
 # ## Classfier run
