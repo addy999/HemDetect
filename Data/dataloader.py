@@ -7,7 +7,7 @@ import gc
 
 class Data:
     
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None):
+    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False):
         
         if type(path_to_pickle_folders) != list:
             path_to_pickle_folders = [path_to_pickle_folders]
@@ -23,14 +23,14 @@ class Data:
             
             files_to_unpickle = [os.path.join(folder, img) for img in os.listdir(folder)]
             files_to_unpickle = files_to_unpickle[:maximum_per_folder]
-            
-#             gc.disable()
-            #p = Pool()
-            #results = p.map(self.parsePickle, files_to_unpickle)
-            #p.close()
-            #p.join()
-            results = [self.parsePickle(file) for file in files_to_unpickle]
-#             gc.enable()
+
+            if multi_pool:
+                p = Pool()
+                results = p.map(self.parsePickle, files_to_unpickle)
+                p.close()
+                p.join()
+            else:
+                results = [self.parsePickle(file) for file in files_to_unpickle]
             
             # add to data
             for file in results:
