@@ -4,15 +4,17 @@ import torch
 import numpy as np
 from multiprocessing import Pool
 import gc
+import torch.nn.functional as F
 
 class Data:
     
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False):
+    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 512):
         
         if type(path_to_pickle_folders) != list:
             path_to_pickle_folders = [path_to_pickle_folders]
         
         self.data = []
+        self.size = size
         
         for folder in path_to_pickle_folders:
             print("Unpacking", os.path.basename(folder))
@@ -44,30 +46,26 @@ class Data:
 
         self.convetLabels()
         self.dataToTensor()
-        self.cleanData()
-    
-    def cleanData(self):
-        remove = []
-        i=0
-        for data in self.data:
-            val = list(data.values())[0]
-            if type(val) != torch.Tensor:
-                remove.append(i)
-            i+=1
-
-        for i in remove:
-            del self.data[i]
 
     def dataToTensor(self):
-        i = 0
+        new_data = []
         for data_dict in self.data:
             array = list(data_dict.values())[0]
+            label = list(data_dict.keys())[0]
+
             array = torch.Tensor(array).unsqueeze(0) * 255
-            if array.shape == torch.Size([1, 512, 512]):
-                self.data[i] = {
-                    list(data_dict.keys())[0] : array
-                }
-            i+=1
+            #print("before", array.shape)
+            array = F.interpolate(array.unsqueeze(0), size=self.size).squeeze(0)
+            #print("after", array.shape)
+            if type(array) == torch.Tensor: 
+                #and array.shape == torch.Size([1, self.size, self.size]):
+                    new_data.append({
+                     label : array
+                    })
+            else:
+                print(type(array), array.shape)
+
+        self.data = new_data
     
     def convetLabels(self):
         all_labels = np.array([list(data.keys())[0] for data in self.data])
@@ -78,9 +76,9 @@ class Data:
         try:
             f=open(path_to_pickle,'rb')
             
-            gc.disable()
+            #gc.disable()
             img=pickle.load(f)
-            gc.enable()
+            #gc.enable()
             
             f.close()
             return img
@@ -93,9 +91,10 @@ class Data:
         img = list(data.values())[0]
         word_label = list(data.keys())[0]
         label = self.label_dict[word_label]
-
-        if type(img) != torch.Tensor:
-            img, label = self.__getitem__(idx-1)
+        #print(img.shape)
+        #if type(img) != torch.Tensor:
+            #print(type(img))
+            #img, label = self.__getitem__(idx-1)
         
         #print(type(img), type(label))
 
