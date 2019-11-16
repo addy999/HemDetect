@@ -1,0 +1,21 @@
+Import Train Data...
+Unpacking epidural
+Unpacking intraparenchymal
+Unpacking subarachnoid
+Unpacking intraventricular
+Unpacking subdural
+Unpacking nohem
+Amound of train data being used: 5922
+Starting training
+Traceback (most recent call last):
+  File "./test.py", line 38, in <module>
+    train(model, train_data, learning_rate=0.01, use_cuda=False)
+  File "/home/addy/Training/Scripts/Training.py", line 63, in train
+    loss = criterion(outputs, labels) 
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/modules/module.py", line 541, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/modules/loss.py", line 601, in forward
+    reduction=self.reduction)
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/functional.py", line 2112, in binary_cross_entropy_with_logits
+    raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))
+ValueError: Target size (torch.Size([64])) must be the same as input size (torch.Size([64, 1]))

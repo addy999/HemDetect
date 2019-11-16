@@ -15,6 +15,7 @@ import os
 # alexnet_model
 alexnet_model = torchvision.models.alexnet(pretrained=True)
 alexnet_model.features[0] = nn.Conv2d(1, 64, kernel_size= 7, stride= 2, padding= 3)
+alexnet_model.cuda()
 
 class AlexNetDetector1(nn.Module):
     def __init__(self):
@@ -26,15 +27,17 @@ class AlexNetDetector1(nn.Module):
         
         self.alex_output_size = 256*15*15
         self.fc1 = nn.Linear(self.alex_output_size, 100)
-        self.fc2 = nn.Linear(100, 2)
+        self.fc2 = nn.Linear(100, 1)
 
     def forward(self, x):
         x = alexnet_model.features(x)
-        print("Alex output", x.shape)
+        #print("Alex output", x.shape)
         #full size: x = x.view(-1, 256*31*31)
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = self.fc2(x).squeeze(1)
+
+        #print("output",x.shape)
 
         return x
     

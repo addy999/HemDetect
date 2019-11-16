@@ -38,7 +38,7 @@ def get_accuracy(model, data_loader, use_cuda):
 
 def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False):
     
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
     iters, losses, train_acc, val_acc = [], [], [], []
     
@@ -60,7 +60,7 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
             #############################################
 
             outputs = model(imgs)             
-            loss = criterion(outputs, labels) 
+            loss = criterion(outputs, labels.float()) 
             loss.backward()               
             optimizer.step()              
             optimizer.zero_grad()         
@@ -70,7 +70,7 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
             count = count+1
             # print(epoch, count)
             
-        print("Epoch", epoch, "Loss", loss)
+        print("Epoch", epoch, "Loss", losses[-1])
         
         # Save the current model (checkpoint) to a file
         model_path = model_save_dir + model.name + "/{0}_bs_{1}_lr_{2}_epoch.pt".format(
