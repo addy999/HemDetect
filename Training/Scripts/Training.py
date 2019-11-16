@@ -66,7 +66,6 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
             optimizer.zero_grad()         
 
             # save the current training information
-            iters.append(n)
             losses.append(float(loss)/batch_size)            
             count = count+1
             # print(epoch, count)
