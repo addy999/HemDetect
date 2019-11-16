@@ -1,5 +1,16 @@
 import torch.nn as nn
 import torchvision.models
+import torch.nn.functional as F
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+from torchvision import datasets
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+import torch
+import gc 
+import os
 
 # alexnet_model
 alexnet_model = torchvision.models.alexnet(pretrained=True)
