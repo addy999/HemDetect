@@ -55,6 +55,7 @@ class AlexNetDetector2(nn.Module):
 resnet152 = torchvision.models.resnet152(pretrained=True)
 modules = list(resnet152.children())
 modules[0].in_channels = 1
+resnet152 = nn.Sequence(modules)
 for param in resnet152.parameters():
     param.requires_grad = False
 
