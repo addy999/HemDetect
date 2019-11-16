@@ -33,6 +33,6 @@ train_data = Data(training_folders,
 print("Amound of train data being used:", len(train_data))
 
 model = AlexNetDetector1().cuda()
-model.name = "reorg_test"
+model.name = "reorg_test_sigmoid"
 print("Starting training")
-train(model, train_data, batch_size=32, learning_rate=0.01, use_cuda=True)
+train(model, train_data, batch_size=32, learning_rate=0.0001, use_cuda=True)
