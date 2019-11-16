@@ -14,7 +14,7 @@ import torch
 import gc 
 import os
 
-model_save_dir = "Models/"
+model_save_dir = "../Models/"
 
 def get_accuracy(model, data_loader, use_cuda):
 
