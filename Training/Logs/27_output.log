@@ -1,0 +1,18 @@
+Train...
+Unpacking epidural
+Unpacking intraparenchymal
+Unpacking subarachnoid
+Unpacking intraventricular
+Unpacking subdural
+Unpacking nohem
+Amound of train data being used: 27154
+Starting training
+Epoch 0 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 1 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 2 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 3 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 4 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 5 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 6 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 7 Loss tensor(nan, grad_fn=<NllLossBackward>)
+Epoch 8 Loss tensor(nan, grad_fn=<NllLossBackward>)

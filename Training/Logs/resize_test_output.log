@@ -1,0 +1,23 @@
+Train...
+Unpacking epidural
+Unpacking intraparenchymal
+Unpacking subarachnoid
+Unpacking intraventricular
+Unpacking subdural
+Unpacking nohem
+Amound of train data being used: 593
+Starting training torch.Size([1, 256, 256])
+Traceback (most recent call last):
+  File "./Full_detector_training.py", line 325, in <module>
+    train(model, train_data, batch_size=64, use_cuda=False)
+  File "./Full_detector_training.py", line 234, in train
+    loss = criterion(outputs, labels) 
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/modules/module.py", line 541, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/modules/loss.py", line 916, in forward
+    ignore_index=self.ignore_index, reduction=self.reduction)
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/functional.py", line 2009, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "/usr/local/lib/python3.7/dist-packages/torch/nn/functional.py", line 1836, in nll_loss
+    .format(input.size(0), target.size(0)))
+ValueError: Expected input batch_size (576) to match target batch_size (64).

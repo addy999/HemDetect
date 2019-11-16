@@ -53,7 +53,8 @@ class Data:
             array = list(data_dict.values())[0]
             label = list(data_dict.keys())[0]
 
-            array = torch.Tensor(array).unsqueeze(0) * 255
+            array = torch.Tensor(array).unsqueeze(0)
+            array = array * 255
             #print("before", array.shape)
             array = F.interpolate(array.unsqueeze(0), size=self.size).squeeze(0)
             #print("after", array.shape)
