@@ -25,7 +25,7 @@ train_data = Data(training_folders,
                 "intraventricular":"any", 
                 "subdural":"any", 
             }, 
-            maximum_per_folder = 100, 
+            maximum_per_folder = 1000, 
             multi_pool = False, 
             size = 256
             )
