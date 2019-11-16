@@ -13,13 +13,13 @@ class AlexNetDetector1(nn.Module):
         for param in alexnet_model.parameters():
             param.requires_grad = False
         
-        self.alex_output_size = 256*7*7
+        self.alex_output_size = 256*15*15
         self.fc1 = nn.Linear(self.alex_output_size, 100)
         self.fc2 = nn.Linear(100, 2)
 
     def forward(self, x):
         x = alexnet_model.features(x)
-        #print("Alex output", x.shape)
+        print("Alex output", x.shape)
         #full size: x = x.view(-1, 256*31*31)
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))

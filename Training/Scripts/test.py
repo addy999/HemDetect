@@ -32,7 +32,7 @@ train_data = Data(training_folders,
 
 print("Amound of train data being used:", len(train_data))
 
-model = ResnetDetector1()
-model.name = "Resnet_Test"
+model = AlexNetDetector1()
+model.name = "reorg_test"
 print("Starting training")
 train(model, train_data, use_cuda=False)
