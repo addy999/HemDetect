@@ -35,4 +35,4 @@ print("Amound of train data being used:", len(train_data))
 model = AlexNetDetector1().cuda()
 model.name = "reorg_test"
 print("Starting training")
-train(model, train_data, learning_rate=0.001, use_cuda=True)
+train(model, train_data, batch_size=32, learning_rate=0.01, use_cuda=True)
