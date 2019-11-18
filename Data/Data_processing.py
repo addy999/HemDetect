@@ -8,9 +8,9 @@ import pickle
 from multiprocessing import Pool
 
 train_data_path = 'dataset/stage_1_train_images'
-test_data_path = 'dataset/stage_2_train_images'
+test_data_path = 'dataset/stage_2/stage_2_train/rsna-intracranial-hemorrhage-detection/stage_2_train'
 train_csv_path = "dataset/stage_1_train.csv"
-test_csv_path = "dataset/stage_2_train.csv"
+test_csv_path = "dataset/stage_2/rsna-intracranial-hemorrhage-detection/stage_2_train.csv"
 img_names = os.listdir(test_data_path)
 
 def loadTrainingData():
@@ -92,7 +92,7 @@ def cleanNSave(img):
 
 print('Starting pool...')
 
-to_process = hem + nohem
+to_process = hem
 p = Pool()
 undone = p.map(cleanNSave, to_process)
 p.close()
