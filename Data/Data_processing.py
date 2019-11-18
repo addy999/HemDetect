@@ -7,10 +7,10 @@ import os
 import pickle
 from multiprocessing import Pool
 
-train_data_path = '../dataset/stage_1_train_images'
-test_data_path = '../dataset/stage_2_train_images'
-train_csv_path = "../dataset/stage_1_train.csv"
-test_csv_path = "../dataset/stage_2_train.csv"
+train_data_path = 'dataset/stage_1_train_images'
+test_data_path = 'dataset/stage_2_train_images'
+train_csv_path = "dataset/stage_1_train.csv"
+test_csv_path = "dataset/stage_2_train.csv"
 img_names = os.listdir(test_data_path)
 
 def loadTrainingData():
@@ -83,6 +83,8 @@ def cleanNSave(img):
         return None
     try:
         cleaned_img = cleanImg(img)
+        # remove file
+        os.remove(os.path.join(test_data_path, img_name))
         saveFile(cleaned_img, img, "Processed/test")
     except:
 #        print(img, "Unsuccessfull")
