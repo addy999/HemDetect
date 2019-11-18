@@ -8,16 +8,18 @@ import pickle
 from multiprocessing import Pool
 
 train_data_path = '../dataset/stage_1_train_images'
+test_data_path = '../dataset/stage_2_train_images'
 train_csv_path = "../dataset/stage_1_train.csv"
-img_names = os.listdir(train_data_path)
+test_csv_path = "../dataset/stage_2_train.csv"
+img_names = os.listdir(test_data_path)
 
 def loadTrainingData():
-    train_pred_data = pd.read_csv(train_csv_path, index_col=False)
-    train_pred_data.index = train_pred_data['ID'].values
-    return train_pred_data
+    pred_data = pd.read_csv(test_csv_path, index_col=False)
+    pred_data.index = pred_data['ID'].values
+    return pred_data
 
 
-train_pred_data = loadTrainingData()
+pred_data = loadTrainingData()
 
 
 # # Split data into categories
@@ -31,7 +33,7 @@ categorized_images = {
 }
 
 print('Categorizing...')
-for img_id_cat,label in train_pred_data.values:
+for img_id_cat,label in pred_data.values:
     img_id = img_id_cat[:12]
     cat = img_id_cat[13:]
     categorized_images[cat][label].append(img_id)
@@ -39,7 +41,7 @@ for img_id_cat,label in train_pred_data.values:
 
 def getImg(img_name):
     '''Scale pixel data to Hounsfield units with a linear transformation'''
-    dc = pydicom.dcmread(os.path.join(train_data_path, img_name)+".dcm")
+    dc = pydicom.dcmread(os.path.join(test_data_path, img_name)+".dcm")
     intercept = dc[('0028','1052')].value
     slope = dc[('0028','1053')].value
     return dc.pixel_array * slope + intercept   
@@ -77,24 +79,23 @@ def cleanImg(img_name):
 
 def cleanNSave(img):
     
-    if os.path.exists("Processed/Binary/NoHem/" + img + ".dcm"): 
+    if os.path.exists("Processed/test/" + img + ".dcm"): 
         return None
     try:
         cleaned_img = cleanImg(img)
-        saveFile(cleaned_img, img, "Processed/Binary/NoHem")
+        saveFile(cleaned_img, img, "Processed/test")
     except:
 #        print(img, "Unsuccessfull")
         return img
 
 print('Starting pool...')
 
-nohem.reverse()
-
+to_process = hem + nohem
 p = Pool()
-undone = p.map(cleanNSave, nohem)
+undone = p.map(cleanNSave, to_process)
 p.close()
 p.join()
 
 while None in undone:
     undone.remove(None)
-print(len(undone))
+print("Undone", len(undone))

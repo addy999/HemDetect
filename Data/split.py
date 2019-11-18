@@ -4,12 +4,13 @@ from shutil import move
 from category_map_2 import categorized_images
 import numpy as np
 
-processed_imgs = [img.replace(".pickle", "") for img in os.listdir('./Processed/')]
+processed_imgs = [img.replace(".pickle", "") for img in os.listdir('./Processed/test')]
 # categorized_images.pop("any")
 
 split_ratios = {
-    'train' : 0.80,
-    'val' : 0.20,
+    # 'train' : 0.80,
+    # 'val' : 0.20,
+    'test' : 1.0,
 }
 
 for cat in categorized_images:
@@ -30,21 +31,31 @@ for cat in categorized_images:
     
     # Split and move
     
-    ## Train
-    for i in range(0, int(len(processed_in_cat) * split_ratios['train'])):
-        img = processed_in_cat[i] + ".pickle"
-        src = './Processed/'+img
-        dest = './Processed/train/'+cat+img
-        try:
-            move(src, dest)
-        except:
-            pass
+    # ## Train
+    # for i in range(0, int(len(processed_in_cat) * split_ratios['train'])):
+    #     img = processed_in_cat[i] + ".pickle"
+    #     src = './Processed/'+img
+    #     dest = './Processed/train/'+cat+img
+    #     try:
+    #         move(src, dest)
+    #     except:
+    #         pass
     
-    ## Val
-    for i in range(int(len(processed_in_cat) * split_ratios['train']), len(processed_in_cat)):
+    # ## Val
+    # for i in range(int(len(processed_in_cat) * split_ratios['train']), len(processed_in_cat)):
+    #     img = processed_in_cat[i] + ".pickle"
+    #     src = './Processed/'+img
+    #     dest = './Processed/val/'+cat+img
+    #     try:
+    #         move(src, dest)
+    #     except:
+    #         pass
+    
+    ## Test
+    for i in range(int(len(processed_in_cat) * split_ratios['test'])):
         img = processed_in_cat[i] + ".pickle"
-        src = './Processed/'+img
-        dest = './Processed/val/'+cat+img
+        src = './Processed/test/'+img
+        dest = './Processed/test/'+cat+img
         try:
             move(src, dest)
         except:
