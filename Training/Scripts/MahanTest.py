@@ -32,8 +32,8 @@ train_data = Data(training_folders,
 
 print("Amound of train data being used:", len(train_data))
 
-model = AlexNetDetector1(256).cuda()
-model.name = "shrey_test"
+model = AlexNetDetector2(256).cuda()
+model.name = "mahan_test"
 
 print(len(train_data.label_dict))
 

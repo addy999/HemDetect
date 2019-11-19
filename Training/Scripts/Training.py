@@ -36,10 +36,19 @@ def get_accuracy(model, data_loader, use_cuda):
         n = n+1
     return cor / total
 
-def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False):
+def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False, optim_param="sgd"):
     
-    criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+    if len(train_dataset.label_dict) > 2:
+        criterion = nn.CrossEntropyLoss()
+    else:
+        criterion = nn.BCEWithLogitsLoss()
+        
+    # Try adam
+    if optim_param == "sgd":    
+        optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+        
     iters, losses, train_acc, val_acc = [], [], [], []
     
     if not os.path.exists(model_save_dir + model.name):

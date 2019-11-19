@@ -18,7 +18,7 @@ alexnet_model.features[0] = nn.Conv2d(1, 64, kernel_size= 7, stride= 2, padding=
 alexnet_model.cuda()
 
 class AlexNetDetector1(nn.Module):
-    def __init__(self):
+    def __init__(self, img_size):
         super(AlexNetDetector1, self).__init__()
         self.name = "AlexNetDetector1"
 
@@ -31,7 +31,6 @@ class AlexNetDetector1(nn.Module):
 
     def forward(self, x):
         x = alexnet_model.features(x)
-        #print("Alex output", x.shape)
         #full size: x = x.view(-1, 256*31*31)
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
@@ -52,7 +51,7 @@ class AlexNetDetector2(nn.Module):
         self.alex_output_size = 256*15*15
         self.fc1 = nn.Linear(self.alex_output_size, 1000)
         self.fc2 = nn.Linear(1000, 100)
-        self.fc3 = nn.Linear(100, 2)
+        self.fc3 = nn.Linear(100, 1)
 
     def forward(self, x):
         x = alexnet_model.features(x)
@@ -78,7 +77,7 @@ class ResnetDetector1(nn.Module):
         super(ResnetDetector1, self).__init__()
         self.name = "ResnetDetector1"
         self.fc1 = nn.Linear(512 * 512 * 1, 100)
-        self.fc2 = nn.Linear(100, 2)
+        self.fc2 = nn.Linear(100, 1)
 
     def forward(self, x):
         x = resnet152(x)

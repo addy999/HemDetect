@@ -1,0 +1,34 @@
+Import Train Data...
+Unpacking epidural
+Unpacking intraparenchymal
+Unpacking subarachnoid
+Unpacking intraventricular
+Unpacking subdural
+Unpacking nohem
+Amound of train data being used: 5922
+Starting training
+Epoch 0 Loss 1.4901154088420299e-08
+/usr/local/lib/python3.7/dist-packages/torch/serialization.py:292: UserWarning: Couldn't retrieve source code for container of type AlexNetDetector1. It won't be checked for correctness upon loading.
+  "type " + obj.__name__ + ". It won't be checked "
+/usr/local/lib/python3.7/dist-packages/torch/serialization.py:292: UserWarning: Couldn't retrieve source code for container of type Linear. It won't be checked for correctness upon loading.
+  "type " + obj.__name__ + ". It won't be checked "
+Epoch 1 Loss 0.0
+Epoch 2 Loss 2.7939652369468604e-08
+Epoch 3 Loss 1.8626450382086546e-09
+Epoch 4 Loss 3.49582251146785e-06
+Epoch 5 Loss 0.024348076432943344
+Epoch 6 Loss 0.025285065174102783
+Epoch 7 Loss 0.025752505287528038
+Epoch 8 Loss 0.02666025422513485
+Epoch 9 Loss 0.027551688253879547
+Epoch 10 Loss 0.02842283435165882
+Epoch 11 Loss 0.02927713468670845
+Epoch 12 Loss 0.03011275641620159
+Epoch 13 Loss 0.02756880782544613
+Epoch 14 Loss 1.8626440834168534e-08
+Epoch 15 Loss 0.0
+Epoch 16 Loss 0.000628515612334013
+Epoch 17 Loss 0.013672211207449436
+Epoch 18 Loss 1.8626450382086546e-09
+Epoch 19 Loss 0.03401194512844086
+Time Elapsed 175.19454503059387
