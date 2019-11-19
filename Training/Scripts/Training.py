@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -13,10 +10,13 @@ import time
 import torch
 import gc 
 import os
+import sys
+import os
+import pandas as pd
 
 model_save_dir = "../Models/"
 
-def get_accuracy(model, data_loader, use_cuda):
+def getAccuracyMultiClass(model, data_loader):
 
     cor = 0
     total = 0
@@ -24,9 +24,8 @@ def get_accuracy(model, data_loader, use_cuda):
     for imgs, labels in data_loader:
 
         #To Enable GPU Usage
-        if use_cuda and torch.cuda.is_available():
-            imgs = imgs.cuda()
-            labels = labels.cuda()
+        imgs = imgs.cuda()
+        labels = labels.cuda()
         #############################################
         
         output = model(imgs)
@@ -36,17 +35,35 @@ def get_accuracy(model, data_loader, use_cuda):
         n = n+1
     return cor / total
 
-def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, use_cuda = False, optim_param="sgd"):
+def getAccuracyBinaryClass(model, data_loader):
     
+    total_train_err = 0
+    n = 0
+    for imgs, labels in data_loader:
+        #To Enable GPU Usage
+        imgs = imgs.cuda()
+        labels = labels.cuda()
+        #############################################
+        output = model(imgs)
+        corr = (output > 0.0).squeeze().long() != labels
+        total_train_err += int(corr.sum()) / len(imgs)
+        n += 1
+    
+    return 1 - total_train_err/n 
+
+def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, optim_param="sgd"):
+    
+    # Figure out if binary    
     if len(train_dataset.label_dict) > 2:
         criterion = nn.CrossEntropyLoss()
+        binary = False
     else:
         criterion = nn.BCEWithLogitsLoss()
-        
-    # Try adam
+        binary = True
+
     if optim_param == "sgd":    
         optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
-    else:
+    elif optim_param == "adam":
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         
     iters, losses, train_acc, val_acc = [], [], [], []
@@ -55,7 +72,8 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
         os.mkdir(model_save_dir + model.name)    
     
     training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size)
-    # val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= 32)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= batch_size)
+
     start_time = time.time()
     for epoch in range(num_epochs):
         gc.collect()
@@ -73,11 +91,9 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
             loss.backward()               
             optimizer.step()              
             optimizer.zero_grad()         
-
-            # save the current training information
+            
             losses.append(float(loss)/batch_size)            
             count = count+1
-            # print(epoch, count)
             
         print("Epoch", epoch, "Loss", losses[-1])
         
@@ -88,10 +104,26 @@ def train(model, train_dataset, batch_size = 64, learning_rate=0.01, num_epochs=
                                                    epoch)
         torch.save(model, model_path)
           
-
     end_time = time.time()
     elapsed_time = end_time - start_time
     print("Time Elapsed", elapsed_time)
     
     # Write the train/test loss/err into CSV file for plotting later
     np.savetxt("{0}/Train_loss_timeElapsed_{1}.csv".format(model_save_dir + model.name, elapsed_time), losses)
+    print("Saved losses on disk.")
+    
+    #################### Final acc #############################
+    print("Compute final accuracies.")
+    if binary:
+        acc_func = getAccuracyBinaryClass
+    else:
+        acc_func = getAccuracyMultiClass
+    
+    print("> Train acc")
+    train_acc = acc_func(model, training_loader)
+    print("> Val acc")
+    val_acc = acc_func(model, val_loader)
+    
+    print("Train acc: {0}, Val acc: {1}".format(int(train_acc), int(val_acc)))
+    
+    return train_acc, val_acc
