@@ -7,12 +7,14 @@ import os
 import pickle
 from multiprocessing import Pool
 
-train_data_path = '../dataset/stage_1_train_images'
-train_csv_path = "../dataset/stage_1_train.csv"
-img_names = os.listdir(train_data_path)
+train_data_path = 'dataset/stage_1_train_images'
+test_data_path = 'dataset/stage_2/stage_2_train/rsna-intracranial-hemorrhage-detection/stage_2_train'
+train_csv_path = "dataset/stage_1_train.csv"
+test_csv_path = "dataset/stage_2/rsna-intracranial-hemorrhage-detection/stage_2_train.csv"
+img_names = os.listdir(test_data_path)
 
 def loadTrainingData():
-    train_pred_data = pd.read_csv(train_csv_path, index_col=False)
+    train_pred_data = pd.read_csv(test_csv_path, index_col=False)
     
    # print(train_pred_data[34343:34343+40])
     

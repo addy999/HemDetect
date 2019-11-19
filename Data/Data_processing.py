@@ -84,15 +84,20 @@ def cleanNSave(img):
     try:
         cleaned_img = cleanImg(img)
         # remove file
-        os.remove(os.path.join(test_data_path, img_name))
+       # os.remove(os.path.join(test_data_path, img_name))
         saveFile(cleaned_img, img, "Processed/test")
     except:
 #        print(img, "Unsuccessfull")
         return img
 
 print('Starting pool...')
-
+print(len(hem))
 to_process = hem
+
+undone = []
+#for img in to_process:
+ #   undone.append(cleanNSave(img))
+
 p = Pool()
 undone = p.map(cleanNSave, to_process)
 p.close()

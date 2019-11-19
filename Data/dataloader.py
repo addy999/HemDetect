@@ -92,6 +92,8 @@ class Data:
         img = list(data.values())[0]
         word_label = list(data.keys())[0]
         label = self.label_dict[word_label]
+        #label = torch.Tensor(label).unsqueeze(0)
+        
         #print(img.shape)
         #if type(img) != torch.Tensor:
             #print(type(img))
