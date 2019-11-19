@@ -72,6 +72,11 @@ class Data:
         all_labels = np.array([list(data.keys())[0] for data in self.data])
         unique_labels = list(np.unique(all_labels))
         self.label_dict = {label:unique_labels.index(label) for label in unique_labels}
+        
+        if len(self.label_dict) > 2:
+            self.binary = False
+        else:
+            self.binary = True
     
     def parsePickle(self, path_to_pickle):
         try:
@@ -92,14 +97,11 @@ class Data:
         img = list(data.values())[0]
         word_label = list(data.keys())[0]
         label = self.label_dict[word_label]
-        #label = torch.Tensor(label).unsqueeze(0)
         
-        #print(img.shape)
-        #if type(img) != torch.Tensor:
-            #print(type(img))
-            #img, label = self.__getitem__(idx-1)
-        
-        #print(type(img), type(label))
+        if not self.binary:
+            total_classes = len(self.label_dict)
+            all_labels = [[label] + [0] for i in range(total_classes-1)]
+            label = torch.Tensor(all_labels)
 
         return img, label
     
