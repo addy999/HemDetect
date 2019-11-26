@@ -1,35 +1,6 @@
-Import Train Data...
-Unpacking epidural
-Unpacking intraparenchymal
-Unpacking subarachnoid
-Unpacking intraventricular
-Unpacking subdural
-Unpacking nohem
-Amound of train data being used: 2947
-2
-Starting training
-Epoch 0 Loss 5.389171064962284e-07
-/usr/local/lib/python3.7/dist-packages/torch/serialization.py:292: UserWarning: Couldn't retrieve source code for container of type AlexNetDetector1. It won't be checked for correctness upon loading.
-  "type " + obj.__name__ + ". It won't be checked "
-/usr/local/lib/python3.7/dist-packages/torch/serialization.py:292: UserWarning: Couldn't retrieve source code for container of type Linear. It won't be checked for correctness upon loading.
-  "type " + obj.__name__ + ". It won't be checked "
-Epoch 1 Loss 0.01785297319293022
-Epoch 2 Loss 0.02198709547519684
-Epoch 3 Loss 0.017986733466386795
-Epoch 4 Loss 4.725353937828913e-05
-Epoch 5 Loss 0.01554046105593443
-Epoch 6 Loss 0.01584237441420555
-Epoch 7 Loss 0.01626182347536087
-Epoch 8 Loss 0.01649014838039875
-Epoch 9 Loss 0.010550446808338165
-Epoch 10 Loss 0.017149388790130615
-Epoch 11 Loss 0.017464393749833107
-Epoch 12 Loss 0.017777511849999428
-Epoch 13 Loss 0.01156540960073471
-Epoch 14 Loss 0.018417339771986008
-Epoch 15 Loss 0.01871933601796627
-Epoch 16 Loss 0.019018765538930893
-Epoch 17 Loss 0.01931663230061531
-Epoch 18 Loss 0.01961088925600052
-Epoch 19 Loss 0.014128006994724274
-Time Elapsed 91.80239748954773
+Traceback (most recent call last):
+  File "MahanTest.py", line 5, in <module>
+    from dataloader import Data
+  File "../../Data/dataloader.py", line 2, in <module>
+    import _pickle as pickle
+ModuleNotFoundError: No module named '_pickle'

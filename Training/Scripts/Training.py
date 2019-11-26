@@ -18,22 +18,35 @@ model_save_dir = "../Models/"
 
 def getAccuracyMultiClass(model, data_loader):
 
-    cor = 0
-    total = 0
-    n = 0
-    for imgs, labels in data_loader:
+#     cor = 0
+#     total = 0
+#     n = 0
+#     for imgs, labels in data_loader:
 
-        #To Enable GPU Usage
-        imgs = imgs.cuda()
-        labels = labels.cuda()
-        #############################################
+#         #To Enable GPU Usage
+#         imgs = imgs.cuda()
+#         labels = labels.cuda()
+#         #############################################
         
+#         output = model(imgs)
+#         pred = output.max(1, keepdim=True)[1]
+#         cor = cor + pred.eq(labels.view_as(pred)).sum().item()
+#         total = total + imgs.shape[0]
+#         n = n+1
+#     return cor / total
+    correct = 0
+    total = 0
+    
+    for imgs, labels in data_loader:
+        if torch.cuda.is_available():
+            imgs = imgs.cuda()
+            labels = labels.cuda()
         output = model(imgs)
+        #select index with maximum prediction score
         pred = output.max(1, keepdim=True)[1]
-        cor = cor + pred.eq(labels.view_as(pred)).sum().item()
-        total = total + imgs.shape[0]
-        n = n+1
-    return cor / total
+        correct += pred.eq(labels.view_as(pred)).sum().item()
+        total += imgs.shape[0]
+    return correct / total
 
 def getAccuracyBinaryClass(model, data_loader):
     
@@ -52,7 +65,6 @@ def getAccuracyBinaryClass(model, data_loader):
     return 1 - total_train_err/n 
 
 def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01, num_epochs=20, optim_param="sgd"):
-    
     # Figure out if binary    
     if len(train_dataset.label_dict) > 2:
         criterion = nn.CrossEntropyLoss()
@@ -81,17 +93,20 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
         for imgs, labels in iter(training_loader):
 
             #To Enable GPU Usage
-            if use_cuda and torch.cuda.is_available():
-                imgs = imgs.cuda()
-                labels = labels.cuda()
+            imgs = imgs.cuda()
+            labels = labels.cuda()
             #############################################
-
-            outputs = model(imgs)             
-            loss = criterion(outputs, labels.float()) 
+#             outputs = model(imgs.reshape(-1)) #for baseline
+            outputs = model(imgs)
+           # print(outputs.shape, labels.shape)
+            if binary:
+                loss = criterion(outputs, labels.float()) 
+            else:
+                loss = criterion(outputs, labels) 
             loss.backward()               
             optimizer.step()              
             optimizer.zero_grad()         
-            
+            #print(loss)
             losses.append(float(loss)/batch_size)            
             count = count+1
             
@@ -124,6 +139,6 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
     print("> Val acc")
     val_acc = acc_func(model, val_loader)
     
-    print("Train acc: {0}, Val acc: {1}".format(int(train_acc), int(val_acc)))
+    print("Train acc: {0}, Val acc: {1}".format(train_acc, val_acc))
     
     return train_acc, val_acc
