@@ -18,22 +18,23 @@ model_save_dir = "../Models/"
 
 def getAccuracyMultiClass(model, data_loader):
 
-#     cor = 0
-#     total = 0
-#     n = 0
-#     for imgs, labels in data_loader:
+    #cor = 0
+    #total = 0
+    #n = 0
+    #for imgs, labels in data_loader:
 
-#         #To Enable GPU Usage
-#         imgs = imgs.cuda()
-#         labels = labels.cuda()
-#         #############################################
+        #To Enable GPU Usage
+        #imgs = imgs.cuda()
+        #labels = labels.cuda()
+        #############################################
         
-#         output = model(imgs)
-#         pred = output.max(1, keepdim=True)[1]
-#         cor = cor + pred.eq(labels.view_as(pred)).sum().item()
-#         total = total + imgs.shape[0]
-#         n = n+1
-#     return cor / total
+        #output = model(imgs)
+        #pred = output.max(1, keepdim=True)[1]
+        #cor = cor + pred.eq(labels.view_as(pred)).sum().item()
+        #total = total + imgs.shape[0]
+        #n = n+1
+    #return cor / total
+
     correct = 0
     total = 0
     
@@ -96,9 +97,9 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
             imgs = imgs.cuda()
             labels = labels.cuda()
             #############################################
-#             outputs = model(imgs.reshape(-1)) #for baseline
+            
+            # outputs = model(imgs.reshape(-1)) #for baseline
             outputs = model(imgs)
-           # print(outputs.shape, labels.shape)
             if binary:
                 loss = criterion(outputs, labels.float()) 
             else:
@@ -113,10 +114,7 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
         print("Epoch", epoch, "Loss", losses[-1])
         
         # Save the current model (checkpoint) to a file
-        model_path = model_save_dir + model.name + "/{0}_bs_{1}_lr_{2}_epoch.pt".format(
-                                                   batch_size,
-                                                   learning_rate,
-                                                   epoch)
+        model_path = model_save_dir + model.name + "/{}_epoch.pt".format(epoch)
         torch.save(model, model_path)
           
     end_time = time.time()
@@ -124,7 +122,12 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
     print("Time Elapsed", elapsed_time)
     
     # Write the train/test loss/err into CSV file for plotting later
-    np.savetxt("{0}/Train_loss_timeElapsed_{1}.csv".format(model_save_dir + model.name, elapsed_time), losses)
+    if binary:
+        string = "Binary"
+    else:
+        string = "Multi"
+        
+    np.savetxt("{0}/Train_loss_timeElapsed_{1}_s_{2}.csv".format(model_save_dir + model.name, elapsed_time, string), losses)
     print("Saved losses on disk.")
     
     #################### Final acc #############################

@@ -5,7 +5,10 @@ import numpy as np
 from multiprocessing import Pool
 import gc
 import torch.nn.functional as F
-import marshal
+
+import sys
+sys.path.append("../Training/Scripts")
+from tl import *
 
 #  Print iterations progress
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
@@ -31,13 +34,15 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         
 class Data:
     
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 512):
+    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 256, tl_model = "alexnet", in_chanels=1):
         
         if type(path_to_pickle_folders) != list:
             path_to_pickle_folders = [path_to_pickle_folders]
         
         self.data = []
         self.size = size
+        self.tl_model = tl_model
+        self.in_channels = in_channels
         
         for folder in path_to_pickle_folders:
             print("Unpacking", os.path.basename(folder))
@@ -55,7 +60,7 @@ class Data:
                 p.close()
                 p.join()
             else:
-#                 results = [self.parsePickle(file) for file in files_to_unpickle]
+                #results = [self.parsePickle(file) for file in files_to_unpickle]
                 results = []
                 i = 1
                 for file in files_to_unpickle:
@@ -74,8 +79,46 @@ class Data:
                         working_label : file
                     })
 
+        print("> Converting labels to tensor.")
         self.convetLabels()
+        print("> Converting data to tensors + resize.")
         self.dataToTensor()
+        print("> Applying transfer learning.")
+        self.applyTL()
+    
+    def applyTL(self):
+        
+        # Pick model
+        model = None
+        if self.tl_model == "alexnet":
+            if self.in_channels == 1:
+                model = alexnet_model_1
+        
+            else:
+                model = alexnet_model_3
+        
+        elif self.tl_model == "resnet":
+            model = resnet152_3
+        
+        else:
+            raise ValueError("Don't be dumb.")
+        
+        # Apply forward pass
+        i = 0
+        for data in self.data:
+            
+            label = list(data.keys())[0]
+            img = list(data.values())[0]
+            
+            if self.in_channels == 3:
+                # Duplicate on all 3 channels
+                img = np.stack((img.cpu().clone().numpy(),)*3, axis=1).squeeze(2)
+                img = torch.Tensor(img).cuda()
+            
+            img = model(img)
+
+            # Resave
+            self.data[i] = dict(zip(label, img))            
 
     def dataToTensor(self):
         new_data = []
