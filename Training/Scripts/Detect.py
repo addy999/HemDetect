@@ -28,12 +28,10 @@ train_data = Data(training_folders,
                 "subdural":"any", 
             }, 
             maximum_per_folder = 5000, #5000
-            multi_pool = False, 
             size = img_size, in_channels=3,
             )
 
 print("Import Val Data...")
-
 val_folders = [
     "../../Data/Processed/val/epidural",
     "../../Data/Processed/val/intraparenchymal",
@@ -52,14 +50,18 @@ val_data = Data(val_folders,
                 "subdural":"any", 
             }, 
             maximum_per_folder = 1500, #1500
-            multi_pool = False, 
             size = img_size, in_channels = 3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
 model = AlexNetDetector3(img_size).cuda()
-model.name = "detect_alex3, imgs=27k, bs=32, epoch=30, lr=0.0001"
+# model.name = "alex3_overfit"
+# model.name = "detect_alex3, imgs=27k, bs=32, epoch=30, lr=0.0001" #87
+# model.name = "detect_alex3, imgs=27k, bs=128, epoch=20, lr=0.0001" #87.3
+# model.name = "detect_alex3, imgs=27k, bs=128, epoch=20, lr=0.00001" #86.9
+# model.name = "detect_alex3, imgs=27k, bs=128, epoch=40, lr=0.0001" #87.25
+model.name = "detect_alex3, imgs=27k, bs=512, epoch=20, lr=0.0001" #86.2
 
 print("Starting training")
-train(model, train_data, val_data, batch_size=64, num_epochs=30, learning_rate=0.0001)
+train(model, train_data, val_data, batch_size=512, num_epochs=20, learning_rate=0.0001)
