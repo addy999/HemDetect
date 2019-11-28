@@ -142,6 +142,9 @@ class Data:
                 if type(img) == torch.Tensor:
                     new_data.append({label : img})        
             
+            else:
+                new_data.append(data)
+            
             i+=1   
         
         #print(img.shape)

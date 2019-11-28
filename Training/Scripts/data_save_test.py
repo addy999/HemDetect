@@ -4,7 +4,7 @@ sys.path.append(r"./")
 sys.path.append(r'../../Data/')
 from dataloader import Data
 from Training import *
-from BaselineModel import *
+from ClassifierModels import *
 
 print("Import Train Data...")
 
@@ -36,7 +36,9 @@ val_data = Data(val_folders,
             size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
+print("Data being used: ", len(train_data))
+
 
 res_model = AlexNetClassifier2(256).cuda()
 res_model.name = "data_save_test"
-train(res_model, train_data, val_data, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
+train(res_model, train_data, val_data, batch_size=1, num_epochs=40, learning_rate=0.001, optim_param="sgd")

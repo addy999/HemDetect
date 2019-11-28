@@ -4,7 +4,7 @@ sys.path.append(r"./")
 sys.path.append(r'../../Data/')
 from dataloader import Data
 from Training import *
-from BaselineModel import *
+from ClassifierModels import *
 
 print("Import Train Data...")
 
