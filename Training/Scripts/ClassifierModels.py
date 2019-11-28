@@ -248,5 +248,5 @@ class ResnetClass3(nn.Module):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
-        x = self.fc4(x).squeeze(1)
+        x = F.softmax(self.fc4(x)).squeeze(1)
         return x

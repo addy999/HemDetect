@@ -90,10 +90,35 @@ class Data:
 
         print("> Converting labels to tensor.")
         self.convetLabels()
-        print("> Applying Transfer Learning")
-        self.applyTL()
-        print("> Saving imgs.")
-        self.saveData()
+        if self.tl_model:
+            print("> Applying Transfer Learning")
+            self.applyTL()
+            print("> Saving imgs.")
+            self.saveData()
+        else:
+            self._dataToTensor()
+            
+    def _dataToTensor(self):
+        new_data = []
+        for data_dict in self.data:
+            array = list(data_dict.values())[0]
+            label = list(data_dict.keys())[0]
+
+            array = torch.Tensor(array).unsqueeze(0)
+            array = array * 255
+            #print("before", array.shape)
+            array = F.interpolate(array.unsqueeze(0), size=self.size).squeeze(0)
+            #print("after", array.shape)
+            if type(array) == torch.Tensor: 
+                #and array.shape == torch.Size([1, self.size, self.size]):
+                    new_data.append({
+                     label : array
+                    })
+            else:
+                print(type(array), array.shape)
+
+        self.data = new_data
+            
     
     def saveData(self):
 

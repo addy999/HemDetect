@@ -31,16 +31,16 @@ print("Load Alexnet data")
 
 train_data = Data(training_folders,
             maximum_per_folder = 5000, #5000
-            size = img_size, tl_model = "resnet", in_channels=3,
+            size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 val_data = Data(val_folders,
             maximum_per_folder = 1500, #1500 
-            size = img_size, tl_model = "resnet", in_channels=3,
+            size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
-model = ResnetClass3(256).cuda()
-model.name = "classify_resnet3,imgs=27k,size=256,bs=128,epochs=20,lr=0.00001"
-train(model, train_data, val_data, batch_size=128, num_epochs=20, learning_rate=0.00001, optim_param="sgd")
+model = AlexNetClassifier2(256).cuda()
+model.name = "classify_alex2,imgs=27k,size=256,bs=32,epochs=20,lr=0.001"
+train(model, train_data, val_data, batch_size=32, num_epochs=20, learning_rate=0.001, optim_param="sgd")
