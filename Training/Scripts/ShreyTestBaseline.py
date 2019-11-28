@@ -19,9 +19,9 @@ training_folders = [
 ]
 
 train_data = Data(training_folders,
-            maximum_per_folder = 5000, #5000
+            maximum_per_folder = 1000, #5000
             multi_pool = False,
-            size = img_size
+            size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 val_folders = [
@@ -33,18 +33,16 @@ val_folders = [
 ]
 
 val_data = Data(val_folders,
-            maximum_per_folder = 1500, #1500
+            maximum_per_folder = 300, #1500
             multi_pool = False, 
-            size = img_size
+            size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
-model = ResnetDetector1(256).cuda()
+model = AlexNetClassifer2(256).cuda()
 
 print("Starting training")
-print(model.name)
-      
-model.name = "shrey_baseline_56_size_27k_0.001lr"
+model.name = "classify_res2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
 
-train(model, train_data, val_data, batch_size=32, num_epochs=100, learning_rate=0.0001, optim_param="sgd")
+train(model, train_data, val_data, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")

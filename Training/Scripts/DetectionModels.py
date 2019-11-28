@@ -51,7 +51,11 @@ class AlexNetDetector2(nn.Module):
         self.fc3 = nn.Linear(100, 1)
 
     def forward(self, x):
-        x = x.view(-1, self.alex_output_size)
+        #print(x.shape)
+        try:
+            x = x.view(-1, self.alex_output_size)
+        except:
+            print(x.shape)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -65,24 +69,22 @@ class AlexNetDetector3(nn.Module):
         self.name = "AlexNetDetector3"
 
         if img_size == 256:
-            self.alex_output_size = 256*15*15
+            self.alex_output_size = 256*7*7
         elif img_size == 128:
             self.alex_output_size = 256*7*7
         elif img_size == 512:
             self.alex_output_size = 256*31*31
             
-        self.fc1 = nn.Linear(self.alex_output_size, 10000)
-        self.fc2 = nn.Linear(10000, 1000)
-        self.fc3 = nn.Linear(1000, 100)
-        self.fc4 = nn.Linear(100, 1)
+        self.fc1 = nn.Linear(self.alex_output_size, 1000)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 1)
 
     def forward(self, x):
 
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.fc3(x)
         x = x.squeeze(1)
 
         return x
@@ -114,11 +116,13 @@ class ResnetDetector2(nn.Module):
         if size == 256:
             self.resnet_output_size = 2048
             
-        self.fc1 = nn.Linear(self.resnet_output_size, 100)
-        self.fc2 = nn.Linear(100, 1)
+        self.fc1 = nn.Linear(self.resnet_output_size, 1000)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 1)
 
     def forward(self, x):
         x = x.view(-1, self.resnet_output_size)
         x = F.relu(self.fc1(x))
-        x = self.fc2(x).squeeze(1)
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x).squeeze(1)
         return x

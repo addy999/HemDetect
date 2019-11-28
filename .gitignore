@@ -1,3 +1,8 @@
 Data/dataset
 Data/Processed
 APS360 Project
+.local/*
+*.pt
+*.swp
+*.swm
+*.pyc

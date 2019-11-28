@@ -29,7 +29,7 @@ train_data = Data(training_folders,
             }, 
             maximum_per_folder = 10, #5000
             multi_pool = False, 
-            size = img_size
+            size = img_size, tl_model="alexnet", in_channels=1,
             )
 
 print("Import Val Data...")
@@ -53,13 +53,13 @@ val_data = Data(val_folders,
             }, 
             maximum_per_folder = 5, #1500
             multi_pool = False, 
-            size = img_size
+            size = img_size, tl_model="alexnet", in_channels=1,
             )
 
 print("Amound of train data being used:", len(train_data))
 
 model = AlexNetDetector2(img_size).cuda()
-model.name = "alex2, bs=1, epoch=20, lr=0.0001"
+model.name = "alex2, imgs=60, bs=2, epoch=20, lr=0.0001"
 
 print("Starting training")
-train(model, train_data, val_data, batch_size=1, num_epochs=20, learning_rate=0.0001)
+train(model, train_data, val_data, batch_size=2, num_epochs=20, learning_rate=0.0001)

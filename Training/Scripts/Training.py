@@ -84,8 +84,8 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
     if not os.path.exists(model_save_dir + model.name):
         os.mkdir(model_save_dir + model.name)    
     
-    training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= batch_size)
+    training_loader = torch.utils.data.DataLoader(train_dataset, batch_size= batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size= batch_size, shuffle=True) 
 
     start_time = time.time()
     for epoch in range(num_epochs):

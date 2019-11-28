@@ -27,7 +27,7 @@ for param in alexnet_model_3.parameters():
 
 # Resnet detector
 
-resnet152_3 = torchvision.models.resnet15_32(pretrained=True).cuda()
+resnet152_3 = torchvision.models.resnet152(pretrained=True).cuda()
 # remove last FC layer
 resnet152_3 = torch.nn.Sequential(*(list(resnet152_3.children())[:-1]))
 for param in resnet152_3.parameters():

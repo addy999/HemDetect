@@ -34,7 +34,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         
 class Data:
     
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 256, tl_model = "alexnet", in_chanels=1):
+    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 256, tl_model = "alexnet", in_channels=1):
         
         if type(path_to_pickle_folders) != list:
             path_to_pickle_folders = [path_to_pickle_folders]
@@ -92,33 +92,35 @@ class Data:
         model = None
         if self.tl_model == "alexnet":
             if self.in_channels == 1:
-                model = alexnet_model_1
-        
+                model = alexnet_model_1.features
             else:
-                model = alexnet_model_3
+                model = alexnet_model_3.features
         
         elif self.tl_model == "resnet":
             model = resnet152_3
         
         else:
             raise ValueError("Don't be dumb.")
-        
+
         # Apply forward pass
-        i = 0
+        new_data = []
         for data in self.data:
             
             label = list(data.keys())[0]
-            img = list(data.values())[0]
+            img = list(data.values())[0].unsqueeze(0).cuda()
             
             if self.in_channels == 3:
                 # Duplicate on all 3 channels
                 img = np.stack((img.cpu().clone().numpy(),)*3, axis=1).squeeze(2)
                 img = torch.Tensor(img).cuda()
             
-            img = model(img)
-
+            img = model(img).squeeze(0)
+            
             # Resave
-            self.data[i] = dict(zip(label, img))            
+            new_data.append({label : img})           
+        
+        #print(img.shape)
+        self.data = new_data
 
     def dataToTensor(self):
         new_data = []
@@ -169,6 +171,7 @@ class Data:
         data = self.data[idx]
         img = list(data.values())[0]
         word_label = list(data.keys())[0]
+
         label = self.label_dict[word_label]
         
         #if not self.binary:

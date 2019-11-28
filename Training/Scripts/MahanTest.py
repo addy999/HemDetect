@@ -27,9 +27,9 @@ train_data = Data(training_folders,
                 "intraventricular":"any", 
                 "subdural":"any", 
             }, 
-            maximum_per_folder = 500, #5000
+            maximum_per_folder = 2500, #5000
             multi_pool = False, 
-            size = img_size
+            size = img_size, in_channels=3,
             )
 
 print("Import Val Data...")
@@ -51,15 +51,15 @@ val_data = Data(val_folders,
                 "intraventricular":"any", 
                 "subdural":"any", 
             }, 
-            maximum_per_folder = 100, #1500
+            maximum_per_folder = 750, #1500
             multi_pool = False, 
-            size = img_size
+            size = img_size, in_channels = 3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
-model = AlexNetDetector2(img_size).cuda()
-model.name = "alex2, bs=128, epoch=50, lr=0.0001"
+model = AlexNetDetector3(img_size).cuda()
+model.name = "alex3, imgs=13k, bs=64, epoch=30, lr=0.0001"
 
 print("Starting training")
-train(model, train_data, val_data, batch_size=128, num_epochs=50, learning_rate=0.0001)
+train(model, train_data, val_data, batch_size=64, num_epochs=30, learning_rate=0.0001)
