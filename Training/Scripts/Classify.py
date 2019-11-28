@@ -40,12 +40,12 @@ val_data_a = Data(val_folders,
             )
 
 print("Load resnet data")
-train_data_a = Data(training_folders,
+train_data_r = Data(training_folders,
             maximum_per_folder = 1000, #5000
             size = img_size, tl_model = "resnet", in_channels=3,
             )
 
-val_data_a = Data(val_folders,
+val_data_r = Data(val_folders,
             maximum_per_folder = 300, #1500 
             size = img_size, tl_model = "resnet", in_channels=3,
             )
