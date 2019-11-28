@@ -34,7 +34,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         
 class Data:
     
-    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, multi_pool = False, size = 256, tl_model = "alexnet", in_channels=1):
+    def __init__(self, path_to_pickle_folders, replace_classes = {}, maximum_per_folder = None, size = 256, tl_model = "alexnet", in_channels=1):
         
         if type(path_to_pickle_folders) != list:
             path_to_pickle_folders = [path_to_pickle_folders]
@@ -43,6 +43,12 @@ class Data:
         self.size = size
         self.tl_model = tl_model
         self.in_channels = in_channels
+        self._files = [] #tmp
+        self.files = []
+        self.directory = "./Processed2/"
+        self.prefix = self.tl_model + "-" + str(self.in_channels)
+        
+        already_loaded_files = [img for img in os.listdir(self.directory)]
         
         for folder in path_to_pickle_folders:
             print("Unpacking", os.path.basename(folder))
@@ -51,25 +57,26 @@ class Data:
             if os.path.basename(folder) in replace_classes:
                 working_label = replace_classes[os.path.basename(folder)]
             
+            file_names = [img for img in os.listdir(folder)]
             files_to_unpickle = [os.path.join(folder, img) for img in os.listdir(folder)]
             files_to_unpickle = files_to_unpickle[:maximum_per_folder]
+            file_names = file_names[:maximum_per_folder]
 
-            if multi_pool:
-                p = Pool()
-                results = p.map(self.parsePickle, files_to_unpickle)
-                p.close()
-                p.join()
-            else:
-                #results = [self.parsePickle(file) for file in files_to_unpickle]
-                results = []
-                i = 1
-                for file in files_to_unpickle:
-                    results.append(self.parsePickle(file))
-                    printProgressBar(i, len(files_to_unpickle))
-                    i += 1
+            results = []
+            i = 0
+            for file in files_to_unpickle:
+                
+                if self.directory + self.prefix + "-" + file_names[i] in already_loaded_files:
+                    file = self.directory + self.prefix + "-" + file_names[i]
+                
+                results.append(self.parsePickle(file))
+                printProgressBar(i, len(files_to_unpickle))
+                self._files.append(file)    
+                i += 1
                             
             
             # add to data
+            i = 0
             for file in results:
                 try:
                     if file:
@@ -78,6 +85,9 @@ class Data:
                     self.data.append({
                         working_label : file
                     })
+                    self.files.append(self._files[i])
+                
+                i+=1
 
         print("> Converting labels to tensor.")
         self.convetLabels()
@@ -85,6 +95,17 @@ class Data:
         self.dataToTensor()
         print("> Applying transfer learning.")
         self.applyTL()
+        print("> Saving imgs.")
+        self.saveData()
+    
+    def saveData(self):
+
+        i = 0
+        for data in self.data:
+            if not os.path.exists(self.directory + self.prefix + "-" + self.files[i]):
+                img = list(data.values())[0]
+                pickle.dump(img, open(self.directory + self.prefix + "-" + self.files[i]))
+            i+=1
     
     def applyTL(self):
         
