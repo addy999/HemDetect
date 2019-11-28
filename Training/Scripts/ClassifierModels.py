@@ -146,27 +146,18 @@ class HemorrhageClassifier(nn.Module):
 # Alexnet with many connected MLP layers
 class AlexNetClassifier3(nn.Module):
     def __init__(self,img_size):
-        super(AlexNetClassifier2, self).__init__()
-        self.name = "AlexNetClassifier2"
-
-        for param in alexnet_model.parameters():
-            param.requires_grad = False
+        super(AlexNetClassifier3, self).__init__()
+        self.name = "AlexNetClassifier3"
         
         if img_size == 256:
-            self.alex_output_size = 256*15*15
-        elif img_size == 128:
             self.alex_output_size = 256*7*7
-        elif img_size == 512:
-            self.alex_output_size = 256*31*31
-        print("output size")
-        print(self.alex_output_size)
+            
         self.fc1 = nn.Linear(self.alex_output_size, 1000)
         self.fc2 = nn.Linear(1000, 500)
         self.fc3 = nn.Linear(500, 32)
         self.fc4 = nn.Linear(32, 5)
 
     def forward(self, x):
-        x = alexnet_model.features(x)
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
@@ -190,10 +181,6 @@ class AlexNetClassifier2(nn.Module):
         
         if img_size == 256:
             self.alex_output_size = 256*7*7
-        # elif img_size == 128:
-        #     self.alex_output_size = 256*7*7
-        # elif img_size == 512:
-        #     self.alex_output_size = 256*31*31
             
         self.fc1 = nn.Linear(self.alex_output_size, 1000)
         self.fc2 = nn.Linear(1000, 100)
