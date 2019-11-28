@@ -58,8 +58,12 @@ class Data:
             
             file_names = [img for img in os.listdir(folder)]
             files_to_unpickle = [os.path.join(folder, img) for img in os.listdir(folder)]
-            files_to_unpickle = files_to_unpickle[:maximum_per_folder]
-            file_names = file_names[:maximum_per_folder]
+            if type(maximum_per_folder) == int:
+                file_names = file_names[:maximum_per_folder]
+                files_to_unpickle = files_to_unpickle[:maximum_per_folder]
+            elif type(maximum_per_folder) == tuple:
+                file_names = file_names[maximum_per_folder[0]:maximum_per_folder[1]]
+                files_to_unpickle = files_to_unpickle[maximum_per_folder[0]:maximum_per_folder[1]]
 
             results = []
             i = 0
