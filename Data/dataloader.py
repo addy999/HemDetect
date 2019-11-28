@@ -45,11 +45,12 @@ class Data:
         self.in_channels = in_channels
         self._files = [] #tmp
         self.files = []
-        self.directory = "./Processed2/"
+        self.directory = "/home/addy/Data/Processed2/"
         self.prefix = self.tl_model + "-" + str(self.in_channels)
         
         already_loaded_files = [img for img in os.listdir(self.directory)]
-        
+        #print("> Already loaded", already_loaded_files)
+
         for folder in path_to_pickle_folders:
             print("Unpacking", os.path.basename(folder))
             working_label = os.path.basename(folder)
@@ -65,8 +66,9 @@ class Data:
             results = []
             i = 0
             for file in files_to_unpickle:
-                
-                if self.directory + self.prefix + "-" + file_names[i] in already_loaded_files:
+                #print("> Analyzing", self.directory + self.prefix + "-" + file_names[i])
+                if self.prefix + "-" + file_names[i] in already_loaded_files:
+                    #print("Found!")
                     file = self.directory + self.prefix + "-" + file_names[i]
                 
                 results.append(self.parsePickle(file))
@@ -85,7 +87,7 @@ class Data:
                     self.data.append({
                         working_label : file
                     })
-                    self.files.append(self._files[i])
+                    self.files.append(file_names[i])
                 
                 i+=1
 
@@ -104,7 +106,7 @@ class Data:
         for data in self.data:
             if not os.path.exists(self.directory + self.prefix + "-" + self.files[i]):
                 img = list(data.values())[0]
-                pickle.dump(img, open(self.directory + self.prefix + "-" + self.files[i]))
+                pickle.dump(img, open(self.directory + self.prefix + "-" + self.files[i], 'wb'))
             i+=1
     
     def applyTL(self):
