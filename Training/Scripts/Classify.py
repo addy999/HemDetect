@@ -55,10 +55,10 @@ print("Amound of train data being used:", len(train_data_a))
 print("Starting Alex training")
 alex_model = AlexNetClassifier2(256).cuda()
 alex_model.name = "classify_alex2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
-train(model, train_data_a, val_data_a, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
+train(alex_model, train_data_a, val_data_a, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
 
 
 print("Starting Resnet training")
 res_model = ResnetClass2(256).cuda()
 res_model.name = "classify_res2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
-train(model, train_data_r, val_data_r, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
+train(res_model, train_data_r, val_data_r, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
