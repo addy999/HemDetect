@@ -229,3 +229,24 @@ class ResnetClass2(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x).squeeze(1)
         return x
+    
+class ResnetClass3(nn.Module):
+    def __init__(self, size):
+        super(ResnetClass3, self).__init__()
+        self.name = "ResnetClass3"
+        
+        if size == 256:
+            self.resnet_output_size = 2048
+            
+        self.fc1 = nn.Linear(self.resnet_output_size, 1000)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 32)
+        self.fc4 = nn.Linear(32, 5)
+
+    def forward(self, x):
+        x = x.view(-1, self.resnet_output_size)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x).squeeze(1)
+        return x

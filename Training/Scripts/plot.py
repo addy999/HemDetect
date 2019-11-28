@@ -49,7 +49,7 @@ def plotAccuracy(model_save_path, val_dataset, train_dataset):
     i = 0
     
     for model_params,epoch in zip(models, epochs):
-        print("Epoch", i+1)
+#         print("Epoch", i+1)
         # load model
         model = torch.load(os.path.join(model_save_path, model_params)).cuda()
         # get acc for model and append
