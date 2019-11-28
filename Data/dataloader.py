@@ -43,13 +43,11 @@ class Data:
         self.size = size
         self.tl_model = tl_model
         self.in_channels = in_channels
-        self._files = [] #tmp
         self.files = []
         self.directory = "/home/addy/Data/Processed2/"
         self.prefix = self.tl_model + "-" + str(self.in_channels)
-        
-        already_loaded_files = [img for img in os.listdir(self.directory)]
-        #print("> Already loaded", already_loaded_files)
+        self.already_loaded_files = [img for img in os.listdir(self.directory)]
+        #print("> Already loaded", self.already_loaded_files)
 
         for folder in path_to_pickle_folders:
             print("Unpacking", os.path.basename(folder))
@@ -67,13 +65,12 @@ class Data:
             i = 0
             for file in files_to_unpickle:
                 #print("> Analyzing", self.directory + self.prefix + "-" + file_names[i])
-                if self.prefix + "-" + file_names[i] in already_loaded_files:
+                if self.prefix + "-" + file_names[i] in self.already_loaded_files:
                     #print("Found!")
                     file = self.directory + self.prefix + "-" + file_names[i]
                 
                 results.append(self.parsePickle(file))
-                printProgressBar(i, len(files_to_unpickle))
-                self._files.append(file)    
+                printProgressBar(i, len(files_to_unpickle)) 
                 i += 1
                             
             
@@ -93,9 +90,7 @@ class Data:
 
         print("> Converting labels to tensor.")
         self.convetLabels()
-        print("> Converting data to tensors + resize.")
-        self.dataToTensor()
-        print("> Applying transfer learning.")
+        print("> Applying Transfer Learning")
         self.applyTL()
         print("> Saving imgs.")
         self.saveData()
@@ -127,44 +122,38 @@ class Data:
 
         # Apply forward pass
         new_data = []
+        i = 0
         for data in self.data:
             
-            label = list(data.keys())[0]
-            img = list(data.values())[0].unsqueeze(0).cuda()
+            # If file already saved, then it has TL applied already
+            if self.prefix + "-" + self.files[i] not in self.already_loaded_files:
             
-            if self.in_channels == 3:
-                # Duplicate on all 3 channels
-                img = np.stack((img.cpu().clone().numpy(),)*3, axis=1).squeeze(2)
-                img = torch.Tensor(img).cuda()
+                label = list(data.keys())[0]
+                img = self.dataToTensor(list(data.values())[0]).unsqueeze(0).cuda()
+                
+                if self.in_channels == 3:
+                    # Duplicate on all 3 channels
+                    img = np.stack((img.cpu().clone().numpy(),)*3, axis=1).squeeze(2)
+                    img = torch.Tensor(img).cuda()
+                
+                img = model(img).squeeze(0)
+                
+                # Resave
+                if type(img) == torch.Tensor:
+                    new_data.append({label : img})        
             
-            img = model(img).squeeze(0)
-            
-            # Resave
-            new_data.append({label : img})           
+            i+=1   
         
         #print(img.shape)
         self.data = new_data
 
-    def dataToTensor(self):
-        new_data = []
-        for data_dict in self.data:
-            array = list(data_dict.values())[0]
-            label = list(data_dict.keys())[0]
+    def dataToTensor(self, array):
 
-            array = torch.Tensor(array).unsqueeze(0)
-            array = array * 255
-            #print("before", array.shape)
-            array = F.interpolate(array.unsqueeze(0), size=self.size).squeeze(0)
-            #print("after", array.shape)
-            if type(array) == torch.Tensor: 
-                #and array.shape == torch.Size([1, self.size, self.size]):
-                    new_data.append({
-                     label : array
-                    })
-            else:
-                print(type(array), array.shape)
-
-        self.data = new_data
+        array = torch.Tensor(array).unsqueeze(0)
+        array = array * 255
+        array = F.interpolate(array.unsqueeze(0), size=self.size).squeeze(0)
+        
+        return array
     
     def convetLabels(self):
         all_labels = np.array([list(data.keys())[0] for data in self.data])

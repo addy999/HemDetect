@@ -20,7 +20,6 @@ training_folders = [
 
 train_data = Data(training_folders,
             maximum_per_folder = 1000, #5000
-            multi_pool = False,
             size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
@@ -33,16 +32,21 @@ val_folders = [
 ]
 
 val_data = Data(val_folders,
-            maximum_per_folder = 300, #1500
-            multi_pool = False, 
+            maximum_per_folder = 300, #1500 
             size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
-model = AlexNetClassifer2(256).cuda()
-
 print("Starting training")
-model.name = "classify_res2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
 
-train(model, train_data, val_data, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
+alex_model = AlexNetClassifier2(256).cuda()
+alex_model.name = "classify_alex2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
+
+res_model = ResnetClass2(256).cuda()
+res_model.name = "classify_res2,imgs=6k,size=256,bs=32,epochs=40,lr=0.001"
+
+for model in [alex_model, res_model]:
+    print("************ Training {} *******************".format(model.name[9:14]))
+    train(model, train_data, val_data, batch_size=32, num_epochs=40, learning_rate=0.001, optim_param="sgd")
+

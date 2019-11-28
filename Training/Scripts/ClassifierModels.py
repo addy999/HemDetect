@@ -40,8 +40,6 @@ class AlexNetClassifierCNN(nn.Module):
         super(AlexNetClassifierCNN, self).__init__()
         self.name = "AlexNetClassifierCNN"
         self.img_size = img_size
-        for param in alexnet_model.parameters():
-            param.requires_grad = False
         
         if img_size == 512:
             self.alex_output_size = 256 * 31 * 31
@@ -146,7 +144,7 @@ class HemorrhageClassifier(nn.Module):
         return s(x)
  
 # Alexnet with many connected MLP layers
-class AlexNetClassifier2(nn.Module):
+class AlexNetClassifier3(nn.Module):
     def __init__(self,img_size):
         super(AlexNetClassifier2, self).__init__()
         self.name = "AlexNetClassifier2"
@@ -179,55 +177,68 @@ class AlexNetClassifier2(nn.Module):
         return x
 
 # Alexnet with fewer connected MLP layers
-class AlexNetClassifier3(nn.Module):
+class AlexNetClassifier2(nn.Module):
+    
+    ''' 3 channel alexnet '''
+    
     def __init__(self,img_size):
-        super(AlexNetClassifier3, self).__init__()
-        self.name = "AlexNetClassifier3"
+        super(AlexNetClassifier2, self).__init__()
+        self.name = "AlexNetClassifier2"
 
         for param in alexnet_model.parameters():
             param.requires_grad = False
         
         if img_size == 256:
-            self.alex_output_size = 256*15*15
-        elif img_size == 128:
             self.alex_output_size = 256*7*7
-        elif img_size == 512:
-            self.alex_output_size = 256*31*31
+        # elif img_size == 128:
+        #     self.alex_output_size = 256*7*7
+        # elif img_size == 512:
+        #     self.alex_output_size = 256*31*31
             
         self.fc1 = nn.Linear(self.alex_output_size, 1000)
-        self.fc4 = nn.Linear(1000, 5)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 5)
 
     def forward(self, x):
-        x = alexnet_model.features(x)
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        x = self.fc4(x)
-        x = x.squeeze(1)
-
+        x = self.fc3(x).squeeze(1)
         return x
     
 # Resnet classifer
-
-resnet152 = torchvision.models.resnet152(pretrained=True)
-modules = list(resnet152.children())
-modules[0].in_channels = 1
-
-class HemorrhageClassifier2(nn.Module):
-    def __init__(self):
-        super(HemorrhageClassifier2, self).__init__()
-        self.name = "Classifier 2"
-
-        for param in resnet152.parameters():
-            param.requires_grad = False
-
-        self.fc1 = nn.Linear(512 * 512 * 1, 100)
+class ResnetClass1(nn.Module):
+    def __init__(self, size):
+        super(ResnetClass1, self).__init__()
+        self.name = "ResnetClass1"
+        
+        if size == 256:
+            self.resnet_output_size = 2048
+            
+        self.fc1 = nn.Linear(self.resnet_output_size, 100)
         self.fc2 = nn.Linear(100, 5)
 
     def forward(self, x):
-        x = resnet152(x)
-        x = x.view(-1, 512 * 512 * 1)
+        x = x.view(-1, self.resnet_output_size)
         x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = self.fc2(x).squeeze(1)
+        return x
+    
+class ResnetClass2(nn.Module):
+    def __init__(self, size):
+        super(ResnetClass2, self).__init__()
+        self.name = "ResnetClass2"
+        
+        if size == 256:
+            self.resnet_output_size = 2048
+            
+        self.fc1 = nn.Linear(self.resnet_output_size, 1000)
+        self.fc2 = nn.Linear(1000, 100)
+        self.fc3 = nn.Linear(100, 5)
+
+    def forward(self, x):
+        x = x.view(-1, self.resnet_output_size)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x).squeeze(1)
         return x
