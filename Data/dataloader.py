@@ -45,7 +45,8 @@ class Data:
         self.in_channels = in_channels
         self.files = []
         self.directory = "/home/addy/Data/Processed2/"
-        self.prefix = self.tl_model + "-" + str(self.in_channels)
+        if tl_model:
+            self.prefix = self.tl_model + "-" + str(self.in_channels)
         self.already_loaded_files = [img for img in os.listdir(self.directory)]
         #print("> Already loaded", self.already_loaded_files)
 
@@ -69,9 +70,10 @@ class Data:
             i = 0
             for file in files_to_unpickle:
                 #print("> Analyzing", self.directory + self.prefix + "-" + file_names[i])
-                if self.prefix + "-" + file_names[i] in self.already_loaded_files:
-                    #print("Found!")
-                    file = self.directory + self.prefix + "-" + file_names[i]
+                if self.tl_model:
+                    if self.prefix + "-" + file_names[i] in self.already_loaded_files:
+                        #print("Found!")
+                        file = self.directory + self.prefix + "-" + file_names[i]
                 
                 results.append(self.parsePickle(file))
                 printProgressBar(i, len(files_to_unpickle)) 
