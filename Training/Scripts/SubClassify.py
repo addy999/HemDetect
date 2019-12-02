@@ -34,25 +34,26 @@ train_data = Data(training_folders,
                 "intraparenchymal":"not", 
                 "subarachnoid":"not", 
                 "intraventricular":"not", 
-                "subdural":"not", 
+                "epidural":"not", 
             }, 
-            maximum_per_folder = 1000, #5000
+            maximum_per_folder = 5000, #5000
             size = img_size, tl_model = "alexnet", in_channels=3,
-            )
+           )
 
 val_data = Data(val_folders,
             {
                 "intraparenchymal":"not", 
                 "subarachnoid":"not", 
                 "intraventricular":"not", 
-                "subdural":"not", 
+                "epidural":"not", 
             }, 
-            maximum_per_folder = 300, #1500 
+            maximum_per_folder = 1500, #1500 
             size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 print("Amound of train data being used:", len(train_data))
+#print(val_data.label_dict)
 
-model = AlexNetEpidural(256).cuda()
-model.name = "alexEpidural,imgs=6k,size=256,bs=32,epochs=20,lr=0.001"
-train(model, train_data, val_data, batch_size=32, num_epochs=20, learning_rate=0.001, optim_param="sgd")
+model = AlexNetSubdural(256).cuda()
+model.name = "alexSubdural,imgs=27k,size=256,bs=32,epochs=30,lr=0.0001"
+train(model, train_data, val_data, batch_size=32, num_epochs=30, learning_rate=0.0001, optim_param="sgd")

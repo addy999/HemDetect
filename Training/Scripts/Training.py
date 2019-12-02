@@ -75,7 +75,7 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
         binary = True
 
     if optim_param == "sgd":    
-        optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=0.0)
     elif optim_param == "adam":
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         

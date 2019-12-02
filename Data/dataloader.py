@@ -57,8 +57,10 @@ class Data:
             if os.path.basename(folder) in replace_classes:
                 working_label = replace_classes[os.path.basename(folder)]
             
+            print(">>", folder, working_label)
             file_names = [img for img in os.listdir(folder)]
             files_to_unpickle = [os.path.join(folder, img) for img in os.listdir(folder)]
+
             if type(maximum_per_folder) == int:
                 file_names = file_names[:maximum_per_folder]
                 files_to_unpickle = files_to_unpickle[:maximum_per_folder]
@@ -83,16 +85,16 @@ class Data:
             # add to data
             i = 0
             for file in results:
-                try:
-                    if file:
-                        pass
-                except:
+                #try:
+                  #  if file:
+                 #       pass
+                #except:
                     self.data.append({
                         working_label : file
                     })
                     self.files.append(file_names[i])
                 
-                i+=1
+                    i+=1
 
         print("> Converting labels to tensor.")
         self.convetLabels()
@@ -192,6 +194,7 @@ class Data:
     def convetLabels(self):
         all_labels = np.array([list(data.keys())[0] for data in self.data])
         unique_labels = list(np.unique(all_labels))
+        #print(unique_labels)
         self.label_dict = {label:unique_labels.index(label) for label in unique_labels}
         
         if len(self.label_dict) > 2:
@@ -219,13 +222,7 @@ class Data:
         word_label = list(data.keys())[0]
 
         label = self.label_dict[word_label]
-        
-        #if not self.binary:
-         #   total_classes = len(self.label_dict)
-          #  all_labels = list(self.label_dict.values())
-           # all_labels = [test_label if test_label==label else 0.0 for test_label in all_labels]
-            #label = torch.Tensor(all_labels).long()
-
+    
         return img, label
     
     def __len__(self):
