@@ -32,29 +32,30 @@ print("Load Alexnet data")
 train_data = Data(training_folders,
             {
                 "intraparenchymal":"not", 
-                "subarachnoid":"not", 
-#                 "intraventricular":"not", 
+#                "subarachnoid":"not", 
+                "intraventricular":"not", 
                 "epidural":"not", 
                 "subdural" : "not",
             }, 
-            maximum_per_folder = 5000, #5000
+            maximum_per_folder = 7500, #5000
             size = img_size, tl_model = "alexnet", in_channels=3,
            )
 
 val_data = Data(val_folders,
             {
                 "intraparenchymal":"not", 
-                "subarachnoid":"not", 
-#                 "intraventricular":"not", 
+#                "subarachnoid":"not", 
+                 "intraventricular":"not", 
                 "epidural":"not", 
                 "subdural" : "not",
             }, 
-            maximum_per_folder = 1500, #1500 
+            maximum_per_folder = 2500, #1500 
             size = img_size, tl_model = "alexnet", in_channels=3,
             )
 
 print("Amound of train data being used:", len(train_data))
 
 model = AlexNetIntrav(256).cuda()
-model.name = "alexIntrav,imgs=27k,size=256,bs=256,epochs=30,lr=0.0001"
-train(model, train_data, val_data, batch_size=256, num_epochs=30, learning_rate=0.0001, optim_param="sgd")
+#model = torch.load(r"../Models/alexIntrav2,imgs=27k,size=256,bs=32,epochs=30,lr=0.0001,d0.4/29_epoch.pt").cuda()
+model.name = "alexSubara_sig,imgs=32k,bs=64,epochs=30,lr=0.01,d0.4"
+train(model, train_data, val_data, batch_size=64, num_epochs=5, learning_rate=0.01, optim_param="sgd")

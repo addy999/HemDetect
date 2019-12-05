@@ -1,0 +1,88 @@
+[TerminalIPythonApp] WARNING | Subcommand `ipython notebook` is deprecated and will be removed in future versions.
+[TerminalIPythonApp] WARNING | You likely want to use `jupyter notebook` in the future
+[W 20:43:36.322 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+[I 20:43:36.378 NotebookApp] Serving notebooks from local directory: /home/addy/Training/Scripts
+[I 20:43:36.378 NotebookApp] The Jupyter Notebook is running at:
+[I 20:43:36.379 NotebookApp] http://instance-3.c.silver-binder-253922.internal:8888/?token=34912b6978538320ba812153d6aa2e4e2e126dea34725fb8
+[I 20:43:36.379 NotebookApp]  or http://127.0.0.1:8888/?token=34912b6978538320ba812153d6aa2e4e2e126dea34725fb8
+[I 20:43:36.379 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 20:43:36.383 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///home/addy/.local/share/jupyter/runtime/nbserver-1551-open.html
+    Or copy and paste one of these URLs:
+        http://instance-3.c.silver-binder-253922.internal:8888/?token=34912b6978538320ba812153d6aa2e4e2e126dea34725fb8
+     or http://127.0.0.1:8888/?token=34912b6978538320ba812153d6aa2e4e2e126dea34725fb8
+[I 20:43:53.406 NotebookApp] 302 GET /?token=34912b6978538320ba812153d6aa2e4e2e126dea34725fb8 (138.51.115.44) 0.81ms
+[W 20:44:01.841 NotebookApp] Notebook Plot.ipynb is not trusted
+[W 20:44:01.910 NotebookApp] 404 GET /nbextensions/widgets/notebook/js/extension.js (138.51.115.44) 29.66ms referer=http://35.194.14.219:8888/notebooks/Plot.ipynb
+[I 20:44:03.281 NotebookApp] Kernel started: 0c1cc9e6-acc3-431c-b806-3811cb205bc7
+[I 20:48:37.857 NotebookApp] Saving file at /Plot.ipynb
+[W 20:48:37.860 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:18.299 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:18.300 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:22.874 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:22.875 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:24.552 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:24.553 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:29.775 NotebookApp] Kernel interrupted: 0c1cc9e6-acc3-431c-b806-3811cb205bc7
+[I 20:49:36.888 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:36.889 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:40.989 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:40.990 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:49:41.185 NotebookApp] Saving file at /Plot.ipynb
+[W 20:49:41.186 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 20:52:03.279 NotebookApp] Saving file at /Plot.ipynb
+[W 20:52:03.280 NotebookApp] Notebook Plot.ipynb is not trusted
+[W 21:14:44.902 NotebookApp] 404 GET /notebook/Plot.ipynb (138.51.115.44) 2.52ms referer=None
+[I 21:14:51.101 NotebookApp] 302 GET / (138.51.115.44) 0.78ms
+[W 21:16:08.032 NotebookApp] Notebook Plot.ipynb is not trusted
+[W 21:16:08.083 NotebookApp] 404 GET /nbextensions/widgets/notebook/js/extension.js (138.51.115.44) 1.62ms referer=http://35.194.14.219:8888/notebooks/Plot.ipynb
+[I 21:17:16.602 NotebookApp] Saving file at /Plot.ipynb
+[W 21:17:16.603 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:17:58.127 NotebookApp] Saving file at /Plot.ipynb
+[W 21:17:58.128 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:18:10.219 NotebookApp] Saving file at /Plot.ipynb
+[W 21:18:10.220 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:20:42.479 NotebookApp] Saving file at /Plot.ipynb
+[W 21:20:42.480 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:22:20.951 NotebookApp] Saving file at /Plot.ipynb
+[W 21:22:20.952 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:22:27.506 NotebookApp] Saving file at /Plot.ipynb
+[W 21:22:27.507 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:23:54.919 NotebookApp] Saving file at /Plot.ipynb
+[W 21:23:54.920 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:24:18.916 NotebookApp] Saving file at /Plot.ipynb
+[W 21:24:18.917 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:24:25.525 NotebookApp] Saving file at /Plot.ipynb
+[W 21:24:25.526 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:24:31.405 NotebookApp] Kernel restarted: 0c1cc9e6-acc3-431c-b806-3811cb205bc7
+[I 21:24:43.928 NotebookApp] Saving file at /Plot.ipynb
+[W 21:24:43.929 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:25:02.782 NotebookApp] Saving file at /Plot.ipynb
+[W 21:25:02.783 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:26:04.535 NotebookApp] 302 GET / (209.17.96.66) 0.86ms
+[I 21:26:10.187 NotebookApp] Saving file at /Plot.ipynb
+[W 21:26:10.188 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:26:15.110 NotebookApp] Saving file at /Plot.ipynb
+[W 21:26:15.111 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:36:29.799 NotebookApp] Saving file at /Plot.ipynb
+[W 21:36:29.800 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:38:31.289 NotebookApp] Saving file at /Plot.ipynb
+[W 21:38:31.290 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:38:34.240 NotebookApp] Kernel restarted: 0c1cc9e6-acc3-431c-b806-3811cb205bc7
+[I 21:38:40.111 NotebookApp] Saving file at /Plot.ipynb
+[W 21:38:40.112 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:38:43.349 NotebookApp] Saving file at /Plot.ipynb
+[W 21:38:43.350 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:40:10.283 NotebookApp] Saving file at /Plot.ipynb
+[W 21:40:10.284 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:41:23.088 NotebookApp] Saving file at /Plot.ipynb
+[W 21:41:23.089 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:53:22.764 NotebookApp] Saving file at /Plot.ipynb
+[W 21:53:22.765 NotebookApp] Notebook Plot.ipynb is not trusted
+[I 21:53:23.809 NotebookApp] Saving file at /Plot.ipynb
+[W 21:53:23.810 NotebookApp] Notebook Plot.ipynb is not trusted
+[C 21:54:00.601 NotebookApp] received signal 15, stopping
+[I 21:54:00.602 NotebookApp] Shutting down 1 kernel
+[I 21:54:01.505 NotebookApp] Kernel shutdown: 0c1cc9e6-acc3-431c-b806-3811cb205bc7

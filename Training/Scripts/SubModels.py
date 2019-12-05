@@ -19,7 +19,7 @@ class AlexNetSubdural(nn.Module):
     
     def __init__(self,img_size):
         super(AlexNetSubdural, self).__init__()
-        self.name = "AlexNetEpidural"
+        self.name = "AlexNetSubdural"
         
         if img_size == 256:
             self.alex_output_size = 256*7*7
@@ -50,13 +50,16 @@ class AlexNetIntrav(nn.Module):
         self.fc1 = nn.Linear(self.alex_output_size, 1000)
         self.fc2 = nn.Linear(1000, 100)
         self.fc3 = nn.Linear(100, 1)
-        self.d1 = nn.Dropout(0.0)
+        #self.fc4 = nn.Linear(500, 1)
+        self.d1 = nn.Dropout(0.4)
 
     def forward(self, x):
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(self.d1(x)))
         x = F.relu(self.fc2(self.d1(x)))
-        x = self.fc3(self.d1(x)).squeeze(1)
+        #x = F.relu(self.fc3(self.d1(x)))
+        x = F.sigmoid(self.fc3(self.d1(x)))
+        x = x.squeeze(1)
         return x
     
 class AlexNetSubara(nn.Module):

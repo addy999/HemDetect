@@ -92,7 +92,7 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
         gc.collect()
         count = 0
         for imgs, labels in iter(training_loader):
-
+            #torch.cuda.empty_cache() 
             #To Enable GPU Usage
             imgs = imgs.cuda()
             labels = labels.cuda()
@@ -110,6 +110,8 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
             #print(loss)
             losses.append(float(loss)/batch_size)            
             count = count+1
+            if count%100==0:
+                print(float(loss)/batch_size)
             
         print("Epoch", epoch, "Loss", losses[-1])
         

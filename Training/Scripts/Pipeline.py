@@ -1,5 +1,6 @@
 import operator
-
+import sys
+sys.path.append(r"../../Data")
 from dataloader import Data
 from DetectionModels import *
 from SubModels import *
@@ -20,32 +21,37 @@ def main():
     # Following are hem type models
     # TODO CONFIRM PATH
     # TODO THIS MODEL NAME IS WEIRD
-    subdural_path = r"../Models/AlexNetEpidural, imgs=27k, bs=256, epoch=30, lr=0.0001/29_epoch.pt" 
+    subdural_path = r"../Models//alexSubdural,imgs=27k,size=256,bs=32,epochs=30,lr=0.0001/29_epoch.pt" 
     model_subdural = torch.load(subdural_path).cuda()
 
-    intrav_path = r"../Models/AlexNetIntrav, imgs=27k, bs=256, epoch=30, lr=0.0001/29_epoch.pt" 
-    model_intrav = torch.load(intrav_path).cuda()
+    intrav_path = r"../Models/alexIntrav_sig,imgs=32k,bs=32,epochs=30,lr=0.0001,d0.4/29_epoch.pt" 
+    model_intrav = torch.load(intrav_path).cuda().eval()
 
-    subara_path = r"../Models/AlexNetSubara, imgs=27k, bs=256, epoch=30, lr=0.0001/29_epoch.pt" 
+    subara_path = r"../Models/alexSubara,imgs=27k,size=256,bs=32,epochs=30,lr=0.0001/29_epoch.pt" 
     model_subara = torch.load(subara_path).cuda()
 
-    intrap_path = r"../Models/AlexNetIntrap, imgs=27k, bs=256, epoch=30, lr=0.0001/29_epoch.pt" 
+    intrap_path = r"../Models/alexIntrap,imgs=27k,size=256,bs=32,epochs=30,lr=0.0001/29_epoch.pt" 
     model_intrap = torch.load(intrap_path).cuda()
-    hem_types = { model_subdural : "subdural", model_intrav : "intraventricular", model_subara : "subarachnoid", model_intrap : "intraparenchymal"]
+    hem_types = { 
+            model_subdural : "subdural", 
+            model_intrav : "intraventricular", 
+            model_subara : "subarachnoid", 
+            model_intrap : "intraparenchymal"
+    }
     """ FINAL MODEL PATHS """
 
     test = [
-        "../../Data/Processed/test/epidural",
-        "../../Data/Processed/test/intraparenchymal",
-        "../../Data/Processed/test/subarachnoid",
-        "../../Data/Processed/test/intraventricular",
-        "../../Data/Processed/test/subdural",
-        "../../Data/Processed/test/nohem",    
+        #"../../Data/Processed/val/epidural",
+        #"../../Data/Processed/val/intraparenchymal",
+        #"../../Data/Processed/val/subarachnoid",
+        "../../Data/Processed/val/intraventricular",
+        #"../../Data/Processed/val/subdural",
+        #"../../Data/Processed/val/nohem",    
     ]
     # Do not replace any label
-    test_data = Data(test, maximum_per_folder = 1500,  tl_model = "alexnet", in_channels=3)
+    test_data = Data(test, maximum_per_folder = 50,  tl_model = "alexnet", in_channels=3)
     # Batch size of 1 to simplify
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size= 1)
+    test_data_loader = torch.utils.data.DataLoader(test_data, batch_size=1)
     threshold = 0.2
     # Iterate through test_data
     correct = 0
@@ -55,23 +61,32 @@ def main():
         img = img.cuda()
         label = label.cuda()
         #############################################
-        hem_detected = model_detect(img)
-        if hem_detected > threshold:
+        hem_detected = float(torch.nn.functional.sigmoid(model_detect(img)))
+        print("Model:", hem_detected)
+        if hem_detected <= threshold:
             predictions = {}
             for model, pred_label in hem_types.items():
-                predictions[pred_label] = model(img)
+                fwd_pass = model(img)
+                print(pred_label, fwd_pass)
+                
+                #predictions[pred_label] = float(fwd_pass)
+                predictions[pred_label] = float(torch.nn.functional.sigmoid(fwd_pass))
             # Get probability of Epidural
-            epidural_prob = 0.0
-            for _, prob in predictions.items():
-                epidural_prob += prob
-            predictions["epidural"] = 1 - epidural_prob
+            #epidural_prob = 0.0
+            #for _, prob in predictions.items():
+             #   epidural_prob += prob
+            #predictions["epidural"] = 1 - epidural_prob
             # Get maxiumum probability
-            predicted_label = max(predictions, key=predictions.get)
+            print(predictions)
+            predicted_label = min(predictions, key=predictions.get)
+
         else:
             # TODO 
-            predicted_label = "no_hem"
+            predicted_label = "nohem"
+        
+        print("Predicted {0} when it was {1}".format( predicted_label,test_data._label_dict[float(label)]))
 
-        if predicted_label == label:
+        if predicted_label == test_data._label_dict[float(label)]: 
             correct += 1
         total += 1
     
