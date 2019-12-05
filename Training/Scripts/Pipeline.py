@@ -16,8 +16,9 @@ def main():
     
     """ FINAL MODEL PATHS HERE """
     # Detector
-    detect_path = r"../Models/yeet/detect_alex3_sig\,\ imgs\=32k\,\ bs\=128\,\ epoch\=30\,\ lr\=0.01/29_epoch.pt" 
-    model_detect = torch.load(detect_path).cuda()
+    detect_path = r"../Models/yeet/detect_alex3_sig, imgs=32k, bs=32, epoch=20, lr=0.0001/19_epoch.pt" 
+    #detect_path = r"../Models/yeet/detect_alex3_sig, imgs=32k, bs=512, epoch=30, lr=0.001/29_epoch.pt"
+    model_detect = torch.load(detect_path).cuda().eval()
     # Following are hem type models
     # TODO CONFIRM PATH
     # TODO THIS MODEL NAME IS WEIRD
@@ -30,7 +31,7 @@ def main():
     subara_path = r"../Models/yeet/alexSubara_sig,imgs=32k,bs=512,epochs=30,lr=0.01,d0.4/29_epoch.pt" 
     model_subara = torch.load(subara_path).cuda().eval()
 
-    intrap_path = r"../Models/yeet/alexIntrap_sig,imgs=32k,bs=32,epochs=30,lr=0.0001,d0.4/29_epoch.pt" 
+    intrap_path = r"../Models/yeet/alexIntrap_sig,imgs=32k,bs=32,epochs=30,lr=0.01,d0.4/29_epoch.pt" 
     model_intrap = torch.load(intrap_path).cuda().eval()
     hem_types = { 
             model_subdural : "subdural", 
@@ -41,18 +42,18 @@ def main():
     """ FINAL MODEL PATHS """
 
     test = [
-        "../../Data/Processed/train/epidural",
+        #"../../Data/Processed/train/epidural",
         "../../Data/Processed/val/intraparenchymal",
         "../../Data/Processed/val/subarachnoid",
         "../../Data/Processed/val/intraventricular",
         "../../Data/Processed/val/subdural",
-        "../../Data/Processed/val/nohem",    
+        #"../../Data/Processed/val/nohem",    
     ]
     # Do not replace any label
     test_data = Data(test, maximum_per_folder = 50,  tl_model = "alexnet", in_channels=3)
     # Batch size of 1 to simplify
     test_data_loader = torch.utils.data.DataLoader(test_data, batch_size=1)
-    threshold = 0.2
+    threshold = 0.5
     # Iterate through test_data
     correct = 0
     total = 0
@@ -61,27 +62,27 @@ def main():
         img = img.cuda()
         label = label.cuda()
         #############################################
-        hem_detected = float(torch.nn.functional.sigmoid(model_detect(img)))
+        hem_detected = float(model_detect(img))
         print("Model:", hem_detected)
-        if hem_detected <= threshold:
+        if hem_detected >= threshold:
             predictions = {}
             for model, pred_label in hem_types.items():
-                fwd_pass = model(img)
-                #print(pred_label, fwd_pass)
-                
+                fwd_pass = float(model(img))
+
                 predictions[pred_label] = float(fwd_pass)
                 #predictions[pred_label] = float(torch.nn.functional.sigmoid(fwd_pass))
+            
             # Get probability of Epidural
             #epidural_prob = 0.0
             #for _, prob in predictions.items():
              #   epidural_prob += prob
             #predictions["epidural"] = 1 - epidural_prob
+            
             # Get maxiumum probability
             print(predictions)
             predicted_label = max(predictions, key=predictions.get)
 
         else:
-            # TODO 
             predicted_label = "nohem"
         
         print("Predicted {0} when it was {1}".format( predicted_label,test_data._label_dict[float(label)]))

@@ -58,7 +58,7 @@ class AlexNetIntrav(nn.Module):
         x = F.relu(self.fc1(self.d1(x)))
         x = F.relu(self.fc2(self.d1(x)))
         #x = F.relu(self.fc3(self.d1(x)))
-        x = F.sigmoid(self.fc3(self.d1(x)))
+        x = self.fc3(self.d1(x))
         x = x.squeeze(1)
         return x
     

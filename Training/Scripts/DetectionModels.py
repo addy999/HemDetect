@@ -84,7 +84,7 @@ class AlexNetDetector3(nn.Module):
         x = x.view(-1, self.alex_output_size)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.sigmoid(self.fc3(x))
+        x = self.fc3(x)
         x = x.squeeze(1)
 
         return x

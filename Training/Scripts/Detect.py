@@ -5,6 +5,7 @@ sys.path.append(r'../../Data/')
 from dataloader import Data
 from DetectionModels import *
 from Training import *
+from SubModels import *
 
 print("Import Train Data...")
 
@@ -31,9 +32,10 @@ train_data = Data(training_folders,
             size = img_size, in_channels=3,
             )
 
+#print(train_data._label_dict)
 print("Import Val Data...")
 val_folders = [
-    "../../Data/Processed/val/epidural",
+    "../../Data/Processed/train/epidural",
     "../../Data/Processed/val/intraparenchymal",
     "../../Data/Processed/val/subarachnoid",
     "../../Data/Processed/val/intraventricular",
@@ -55,13 +57,7 @@ val_data = Data(val_folders,
 
 print("Amound of train data being used:", len(train_data))
 
-model = AlexNetDetector3(img_size).cuda()
-# model.name = "alex3_overfit"
-# model.name = "detect_alex3, imgs=27k, bs=32, epoch=30, lr=0.0001" #87
-model.name = "detect_alex3_sig, imgs=32k, bs=128, epoch=30, lr=0.01" #87.3
-# model.name = "detect_alex3, imgs=27k, bs=128, epoch=20, lr=0.00001" #86.9
-# model.name = "detect_alex3, imgs=27k, bs=128, epoch=40, lr=0.0001" #87.25
-#model.name = "detect_alex3, imgs=27k, bs=512, epoch=20, lr=0.0001" #86.2
-
+model = AlexNetIntrav(img_size).cuda()
+model.name = "yeet/detect_alex3, imgs=32k, bs=32, epoch=12, lr=0.0001,d0.4"
 print("Starting training")
-train(model, train_data, val_data, batch_size=128, num_epochs=30, learning_rate=0.01)
+train(model, train_data, val_data, batch_size=32, num_epochs=20, learning_rate=0.0001)
