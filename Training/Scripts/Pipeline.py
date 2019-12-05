@@ -16,7 +16,7 @@ def main():
     
     """ FINAL MODEL PATHS HERE """
     # Detector
-    detect_path = r"../Models/detect_alex3, imgs=27k, bs=128, epoch=20, lr=0.0001/19_epoch.pt" 
+    detect_path = r"../Models/yeet/detect_alex3_sig\,\ imgs\=32k\,\ bs\=128\,\ epoch\=30\,\ lr\=0.01/29_epoch.pt" 
     model_detect = torch.load(detect_path).cuda()
     # Following are hem type models
     # TODO CONFIRM PATH
@@ -52,7 +52,7 @@ def main():
     test_data = Data(test, maximum_per_folder = 50,  tl_model = "alexnet", in_channels=3)
     # Batch size of 1 to simplify
     test_data_loader = torch.utils.data.DataLoader(test_data, batch_size=1)
-    threshold = 0.5
+    threshold = 0.2
     # Iterate through test_data
     correct = 0
     total = 0
@@ -85,7 +85,7 @@ def main():
             predicted_label = "nohem"
         
         print("Predicted {0} when it was {1}".format( predicted_label,test_data._label_dict[float(label)]))
-
+        print("-------------------------------")
         if predicted_label == test_data._label_dict[float(label)]: 
             correct += 1
         total += 1
