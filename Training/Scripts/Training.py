@@ -110,8 +110,8 @@ def train(model, train_dataset, val_dataset, batch_size = 64, learning_rate=0.01
             #print(loss)
             losses.append(float(loss)/batch_size)            
             count = count+1
-            if count%100==0:
-                print(float(loss)/batch_size)
+            #if count%100==0:
+                #print(float(loss)/batch_size)
             
         print("Epoch", epoch, "Loss", losses[-1])
         
